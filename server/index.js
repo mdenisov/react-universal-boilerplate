@@ -1,1 +1,20 @@
-const path = require('path');const Koa = require('koa');const serve = require('koa-static');const Router = require('koa-router');const bodyParser = require('koa-bodyparser');const webpack = require('webpack');const webpackDevMiddleware = require('koa-webpack-middleware').devMiddleware;const webpackHotMiddleware = require('koa-webpack-middleware').hotMiddleware;// Local Importsconst routes = require('./routes');const webpackConfig = require('../webpack/config.dev')[0];const SSR = require('./SSR');const { NODE_ENV } = process.env;// Initialize Express Appconst app = new Koa();const router = new Router();// Server public assetsapp.use(serve(path.resolve(__dirname, '..', 'dist')));// HMR Stuffif (NODE_ENV === 'development') {	const middlewareOptions = {		stats: {			children: false,			colors: true,			reasons: false,			chunks: false		},		hot: true,		quiet: false,		noInfo: false,		lazy: false,		headers: {			'Access-Control-Allow-Origin': 'http://localhost',		},		publicPath: webpackConfig.output.publicPath	};	const compiler = webpack(webpackConfig);	app.use(webpackDevMiddleware(compiler, middlewareOptions));	app.use(webpackHotMiddleware(compiler));}// APIapp	.use(bodyParser())	.use(routes.posts.routes())	.use(routes.posts.allowedMethods());// Server Side Rendering based on routes matched by React-router.router.get('*', SSR.default);app	.use(router.routes())	.use(router.allowedMethods());// Testing does not require you to listen on a portapp.listen(8000, (error) => {	if (!error) {		console.log(`App is running on port: 8000! Build something amazing!`);	}});module.exports = app;
+// Allows you to use the full set of ES6 features on server-side (place it before anything else)
+require('babel-polyfill');
+// Allows you to precompile ES6 syntax
+require('babel-register');
+
+const path = require('path');
+
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+global.__DEV__ = true;
+
+require('css-modules-require-hook')({
+  // generateScopedName: '[name]__[local]__[hash:base64:5]',
+  generateScopedName: '[name]-[local]',
+  extensions: ['.css'],
+  rootDir: path.resolve(__dirname, '../client'),
+});
+
+// Run server
+require('./server');

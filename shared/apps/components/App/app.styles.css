@@ -1,0 +1,85 @@
+* {
+  outline: 0;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+}
+
+body {
+  background: #eceff1;
+  height: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #222;
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-bottom: .5rem;
+  margin-top: .2rem;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: #008cba;
+  line-height: inherit;
+  text-decoration: none;
+}
+
+input, textarea {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #444;
+  background: #fefefe;
+  border: 1px solid #dbe3e6;
+  border-radius: 3px;
+}
+
+button {
+  cursor: pointer;
+  background: #f5f8fd;
+  padding: 4px 8px;
+  border-radius: 6px;
+  color: #2481d7;
+  border: 1px solid rgba(36,129,215,.4);
+}
+
+.menu {
+  position: fixed;
+  color: #ffffff;
+  background: #212121;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  padding: 0;
+  height: auto;
+  will-change: transform,box-shadow;
+  box-shadow: 0 4px 16px rgba(0,0,0,.04);
+  max-height: 56px;
+}
+
+.menu ul {
+  list-style: none;
+  padding: 0;
+}
+
+.menu ul li {
+  margin: 0;
+  padding: 0;
+}
+
+.menu ul li a {
+  padding: 20px 4px;
+  font-size: 16px;
+  line-height: 1;
+  color: hsla(0,0%,100%,.6);
+}
+
+.wrapper {
+  width: 700px;
+  margin: 20px auto;
+}
+
+.content {
+  margin-top: 65px;
+}
