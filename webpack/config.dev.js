@@ -27,7 +27,7 @@ const client = {
   entry: {
     app: [
       'babel-polyfill',
-      'webpack-hot-middleware/client',
+      'webpack-hot-middleware/client?path=http://localhost:8000/__webpack_hmr',
       './app.js',
     ],
     vendor: ['react', 'react-dom', 'redux', 'react-redux', 'redux-thunk', 'react-router-dom', 'react-router-config'],
@@ -55,12 +55,12 @@ const client = {
         },
       },
       {
-        test: /\.css$/,
+        test: /\.less$/,
         // include: [APP, PLATFORM],
         use: [
           { loader: 'style-loader' },
-          { loader: 'css-loader', options: { modules: true, importLoaders: 0, localIdentName: '[name]-[local]' } },
-          // { loader: 'less-loader', options: { outputStyle: 'expanded' } },
+          { loader: 'css-loader', options: { modules: true, importLoaders: 1, localIdentName: '[name]-[local]' } },
+          { loader: 'less-loader' },
         ],
       },
       // {
@@ -93,6 +93,9 @@ const client = {
   },
 
   plugins: [
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin(),
+
     new AssetsPlugin({ path: path.resolve(__dirname, '../public/dist') }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
@@ -119,8 +122,6 @@ const client = {
       __DEV__: true,
     }),
 
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.IgnorePlugin(/webpack-stats\.json$/),
     new FriendlyErrorsWebpackPlugin(),

@@ -4,6 +4,7 @@ require('babel-polyfill');
 require('babel-register');
 
 const path = require('path');
+const less = require('less').parser;
 
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
@@ -12,7 +13,8 @@ global.__DEV__ = true;
 require('css-modules-require-hook')({
   // generateScopedName: '[name]__[local]__[hash:base64:5]',
   generateScopedName: '[name]-[local]',
-  extensions: ['.css'],
+  extensions: ['.less'],
+  processorOpts: { parser: less },
   rootDir: path.resolve(__dirname, '../client'),
 });
 
