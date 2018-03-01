@@ -30,7 +30,7 @@ const app = new Koa();
 const router = new Router();
 
 // Server public assets
-app.use(serve(path.resolve(__dirname, '..', 'public')));
+app.use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }));
 
 // HMR Stuff
 if (NODE_ENV === 'development') {

@@ -44,6 +44,13 @@ const client = {
           loader: 'babel-loader',
           options: {
             presets: ['env', 'react'],
+            plugins: [['react-transform', {
+              transforms: [{
+                transform: 'react-transform-hmr',
+                imports: ['react'],
+                locals: ['module'],
+              }],
+            }]],
           },
         },
       },
@@ -51,7 +58,7 @@ const client = {
         test: /\.less$/,
         use: [
           { loader: 'style-loader' },
-          { loader: 'css-loader', options: { modules: true, importLoaders: 1, localIdentName: '[name]-[local]' } },
+          { loader: 'css-loader', options: { modules: true, importLoaders: 1, localIdentName: '[name]-[local]-[hash:5]' } },
           { loader: 'less-loader' },
         ],
       },

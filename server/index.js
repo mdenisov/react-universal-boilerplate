@@ -12,7 +12,7 @@ global.__DEV__ = true;
 
 require('css-modules-require-hook')({ // eslint-disable-line
   // generateScopedName: '[name]__[local]__[hash:base64:5]',
-  generateScopedName: '[name]-[local]',
+  generateScopedName: '[name]-[local]-[hash:5]',
   extensions: ['.less'],
   processorOpts: { parser: less },
   rootDir: path.resolve(__dirname, '../client'),

@@ -67,26 +67,29 @@ button {
   z-index: 1000;
   padding: 0;
   height: auto;
-  will-change: transform,box-shadow;
   box-shadow: 0 4px 16px rgba(0,0,0,.04);
   max-height: 56px;
-
-  a {
-    padding: 20px 4px;
-    font-size: 16px;
-    line-height: 1;
-    color: hsla(0,0%,100%,.6);
-
-    &:hover {
-      color: hsla(0,0%,100%,.8);
-    }
-  }
 }
 
 .menu-wrapper {
-  &:extend(.wrapper);
-
+  width: 700px;
+  margin: 0 auto;
   display: flex;
+}
+
+.menu-item {
+  padding: 20px 4px;
+  font-size: 16px;
+  line-height: 1;
+  color: hsla(0,0%,100%,.6);
+
+  &:hover {
+    color: hsla(0,0%,100%,.8);
+  }
+
+  &--active {
+    color: hsla(0,0%,100%,.8);
+  }
 }
 
 .wrapper {
