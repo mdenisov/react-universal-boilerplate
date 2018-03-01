@@ -11,11 +11,11 @@ import routes from '../shared/routes';
 const initialState = window.__INITIAL_STATE__;
 const store = configureStore({ initialState });
 
-const render = (routes) => {
+const render = (components) => {
   ReactDOM.hydrate(
     <Provider store={store}>
       <BrowserRouter>
-        { routes }
+        { components }
       </BrowserRouter>
     </Provider>,
     document.getElementById('app'),
@@ -29,6 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // Hot Module Replacement API
 if (module.hot) {
   module.hot.accept('../shared/routes', () => {
-    render(renderRoutes(require('../shared/routes').default));
+    render(renderRoutes(require('../shared/routes').default)); // eslint-disable-line
   });
 }

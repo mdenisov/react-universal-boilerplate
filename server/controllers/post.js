@@ -40,7 +40,11 @@ exports.getPosts = async function getPosts(ctx) {
  */
 exports.addPost = async function addPost(ctx) {
   try {
-    if (!ctx.request.body.post.name || !ctx.request.body.post.title || !ctx.request.body.post.content) {
+    if (
+      !ctx.request.body.post.name ||
+      !ctx.request.body.post.title ||
+      !ctx.request.body.post.content
+    ) {
       ctx.status = 403;
 
       return;
@@ -71,7 +75,7 @@ exports.addPost = async function addPost(ctx) {
 exports.getPost = async function getPost(ctx) {
   try {
     const { slug } = ctx.params;
-    const post = posts.find(post => post.slug === slug);
+    const post = posts.find(item => item.slug === slug);
 
     if (!post) {
       ctx.status = 404;
@@ -95,7 +99,7 @@ exports.getPost = async function getPost(ctx) {
 exports.deletePost = async function deletePost(ctx) {
   try {
     const { slug } = ctx.params;
-    const post = posts.find(post => post.slug === slug);
+    const post = posts.find(item => item.slug === slug);
 
     if (!post) {
       ctx.status = 404;

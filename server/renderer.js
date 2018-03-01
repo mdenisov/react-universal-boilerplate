@@ -11,7 +11,7 @@ import fetchData from '../server/utils/fetchData';
 
 const assets = require('../public/dist/webpack-assets.json');
 
-const render = ({ content, assets1, store }) => ReactDOMServer.renderToNodeStream((
+const render = ({ content, store }) => ReactDOMServer.renderToNodeStream((
   <html lang="en">
     <head>
       <meta charSet="UTF-8" />
@@ -43,7 +43,7 @@ const render = ({ content, assets1, store }) => ReactDOMServer.renderToNodeStrea
   </html>
 ));
 
-export default function serverSideRenderer({ assets }) {
+export default function serverSideRenderer({ assets }) { // eslint-disable-line
   return async function (ctx) {
     const store = configureStore();
     const { url } = ctx.request;

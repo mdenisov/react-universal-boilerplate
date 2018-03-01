@@ -8,12 +8,12 @@ const routes = [
     path: '/blog',
     exact: true,
     component: Feed,
-    loadData: ({ params, getState }) => [fetchAllPostsIfNeeded()],
+    loadData: () => [fetchAllPostsIfNeeded()],
   },
   {
     path: '/blog/:slug',
     component: PostView,
-    loadData: ({ params, getState }) => [fetchSinglePostIfNeeded(params)],
+    loadData: ({ params }) => [fetchSinglePostIfNeeded(params)],
   },
 ];
 

@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import { Link } from 'react-router-dom';
 
@@ -10,8 +11,8 @@ class App extends PureComponent {
       <div className={styles.wrapper}>
         <div className={styles.menu}>
           <ul className={styles['menu-wrapper']}>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/blog">Blog</Link></li>
+            <li><Link to="/" href="/">Home</Link></li>
+            <li><Link to="/blog" href="/blog">Blog</Link></li>
           </ul>
         </div>
         <div className={styles.content}>
@@ -26,5 +27,11 @@ class App extends PureComponent {
     );
   }
 }
+
+App.propTypes = {
+  route: PropTypes.shape({
+    routes: PropTypes.array,
+  }).isRequired,
+};
 
 export default App;

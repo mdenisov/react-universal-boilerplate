@@ -49,7 +49,7 @@ function fetchAllPostsFailure(error) {
 }
 
 export function fetchAllPosts() {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     dispatch(fetchAllPostsRequest());
 
     const url = 'http://localhost:8000/api/posts';

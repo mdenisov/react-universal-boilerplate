@@ -28,6 +28,13 @@ const Post = ({
   </div>
 );
 
+Post.defaultProps = {
+  name: '',
+  slug: '',
+  title: '',
+  content: '',
+};
+
 Post.propTypes = {
   name: PropTypes.string,
   slug: PropTypes.string,

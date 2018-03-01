@@ -1,10 +1,10 @@
-const matchRoutes = require('react-router-config').matchRoutes;
+import { matchRoutes } from 'react-router-config';
 
 // The method for loading data from server-side
 const fetchData = ({ routes, store, url }) => {
-  const match = matchRoutes(routes, url);
+  const matches = matchRoutes(routes, url);
 
-  const promises = match.map(({ route, match }) => {
+  const promises = matches.map(({ route, match }) => {
     if (route.loadData) {
       return Promise.all(route
         .loadData({ params: match.params, getState: store.getState })
@@ -17,4 +17,4 @@ const fetchData = ({ routes, store, url }) => {
   return Promise.all(promises);
 };
 
-module.exports = fetchData;
+export default fetchData;

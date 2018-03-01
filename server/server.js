@@ -5,8 +5,8 @@ const Koa = require('koa');
 const serve = require('koa-static');
 const Router = require('koa-router');
 const bodyParser = require('koa-bodyparser');
-const webpack = require('webpack');
-const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware');
+const webpack = require('webpack'); // eslint-disable-line
+const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
 
 // Local Imports
 const routes = require('./routes');
