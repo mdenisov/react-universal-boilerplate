@@ -5,13 +5,13 @@ import { fetchAllPostsIfNeeded, fetchSinglePostIfNeeded } from './feed.module';
 
 const routes = [
   {
-    path: '/',
+    path: '/blog',
     exact: true,
     component: Feed,
     loadData: ({ params, getState }) => [fetchAllPostsIfNeeded()],
   },
   {
-    path: '/:slug',
+    path: '/blog/:slug',
     component: PostView,
     loadData: ({ params, getState }) => [fetchSinglePostIfNeeded(params)],
   },

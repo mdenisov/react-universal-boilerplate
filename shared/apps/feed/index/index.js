@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import * as actions from '../feed.module';
 import Post from '../components/Post/index';
 
-import styles from '../feed.styles.css';
+import styles from '../feed.styles.less';
 
 class Feed extends PureComponent {
   constructor() {
@@ -68,8 +68,8 @@ class Feed extends PureComponent {
 
   render() {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.content}>
+      <div>
+        <div>
           { this.content() }
         </div>
         <div className={styles.form}>
