@@ -76,6 +76,12 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
+app.on('error', (error) => {
+  if (error.message !== 'read ECONNRESET') {
+    console.log(error);
+  }
+});
+
 // Testing does not require you to listen on a port
 app.listen(8000, (error) => {
   if (!error) {

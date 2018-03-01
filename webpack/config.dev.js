@@ -22,7 +22,7 @@ const client = {
   entry: {
     app: [
       'babel-polyfill',
-      'webpack-hot-middleware/client?path=http://localhost:8000/__webpack_hmr',
+      'webpack-hot-middleware/client',
       './app.js',
     ],
     vendor: ['react', 'react-dom', 'redux', 'react-redux', 'redux-thunk', 'react-router-dom', 'react-router-config'],
@@ -53,6 +53,26 @@ const client = {
           { loader: 'style-loader' },
           { loader: 'css-loader', options: { modules: true, importLoaders: 1, localIdentName: '[name]-[local]' } },
           { loader: 'less-loader' },
+        ],
+      },
+      {
+        test: /\.(woff2?|ttf|eot|svg)$/,
+        loader: 'url-loader',
+        options: { limit: 10240 },
+      },
+      {
+        test: /\.(gif|png|jpe?g|webp)$/,
+        // Any image below or equal to 10K will be converted to inline base64 instead
+        use: [
+          {
+            loader: 'url-loader',
+            options: { limit: 10240 },
+          },
+          // Using for image optimization
+          {
+            loader: 'image-webpack-loader',
+            options: { bypassOnDebug: true },
+          },
         ],
       },
     ],
