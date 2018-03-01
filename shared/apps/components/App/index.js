@@ -13,15 +13,12 @@ class App extends PureComponent {
           <ul className={styles['menu-wrapper']}>
             <li><Link to="/" href="/">Home</Link></li>
             <li><Link to="/blog" href="/blog">Blog</Link></li>
+            <li><Link to="/about" href="/about">About</Link></li>
+            <li><Link to="/contacts" href="/contacts">Contacts</Link></li>
           </ul>
         </div>
         <div className={styles.content}>
           {renderRoutes(this.props.route.routes)}
-        </div>
-        <div className={styles.footer}>
-          <ul className={styles.wrapper}>
-            <li><Link to="/" href="/">Home</Link></li>
-          </ul>
         </div>
       </div>
     );
