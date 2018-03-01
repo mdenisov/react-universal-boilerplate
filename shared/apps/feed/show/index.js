@@ -26,7 +26,7 @@ class PostView extends PureComponent {
     return (
       this.props.feed.isLoading
         ? (
-          <p>Loading Post</p>
+          <div className={styles.loading}>Loading Post</div>
         )
         : (
           <Post

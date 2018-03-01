@@ -3,7 +3,6 @@ import FeedRoutes from './apps/feed/feed.routes';
 
 const routes = [
   {
-    path: '/',
     component: App,
     routes: [
       ...FeedRoutes,

@@ -14,7 +14,7 @@ const Post = ({
       </div>
       <div className={styles['user-info']}>{name}</div>
     </div>
-    <Link to={`/${slug}`} href={`${slug}`} className={styles.title}>
+    <Link to={`/blog/${slug}`} href={`/blog/${slug}`} className={styles.title}>
       <h2>{title}</h2>
     </Link>
 

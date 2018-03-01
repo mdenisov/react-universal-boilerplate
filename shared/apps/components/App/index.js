@@ -9,7 +9,7 @@ class App extends PureComponent {
     return (
       <div className={styles.wrapper}>
         <div className={styles.menu}>
-          <ul className={styles.wrapper}>
+          <ul className={styles['menu-wrapper']}>
             <li><Link to="/">Home</Link></li>
             <li><Link to="/blog">Blog</Link></li>
           </ul>

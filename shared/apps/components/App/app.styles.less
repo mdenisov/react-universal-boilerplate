@@ -51,6 +51,10 @@ button {
   border-radius: 6px;
   color: #2481d7;
   border: 1px solid rgba(36,129,215,.4);
+
+  &:hover {
+    border: 1px solid rgba(36,129,215,.6);
+  }
 }
 
 .menu {
@@ -67,17 +71,22 @@ button {
   box-shadow: 0 4px 16px rgba(0,0,0,.04);
   max-height: 56px;
 
-  //.wrapper {
-  //  display: flex;
-  //  justify-content: space-between;
-  //}
-
   a {
     padding: 20px 4px;
     font-size: 16px;
     line-height: 1;
     color: hsla(0,0%,100%,.6);
+
+    &:hover {
+      color: hsla(0,0%,100%,.8);
+    }
   }
+}
+
+.menu-wrapper {
+  &:extend(.wrapper);
+
+  display: flex;
 }
 
 .wrapper {
@@ -91,6 +100,11 @@ button {
 
 .footer {
   margin-top: 20px;
+
+  &__.wrapper {
+    width: 700px;
+    margin: 20px auto;
+  }
 
   a {
     padding: 20px 4px;
