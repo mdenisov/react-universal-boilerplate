@@ -82,21 +82,23 @@ app.on('error', (error) => {
   }
 });
 
+if (NODE_ENV !== 'test') {
 // Testing does not require you to listen on a port
-app.listen(8000, (error) => {
-  if (!error) {
-    const message = [
-      `App is running in ${chalk.bold.yellow(NODE_ENV)} mode\n`,
-      `Open ${chalk.bold.yellow('http://localhost:8000')} in a browser to view the app.\n`,
-      'Build something amazing!',
-    ];
+  app.listen(8000, (error) => {
+    if (!error) {
+      const message = [
+        `App is running in ${chalk.bold.yellow(NODE_ENV)} mode\n`,
+        `Open ${chalk.bold.yellow('http://localhost:8000')} in a browser to view the app.\n`,
+        'Build something amazing!',
+      ];
 
-    console.log(boxen(chalk.green(message.join('')), {
-      padding: 1,
-      borderColor: 'green',
-      margin: 1,
-    }));
-  }
-});
+      console.log(boxen(chalk.green(message.join('')), {
+        padding: 1,
+        borderColor: 'green',
+        margin: 1,
+      }));
+    }
+  });
+}
 
 module.exports = app;
