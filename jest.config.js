@@ -4,6 +4,8 @@ module.exports = {
   rootDir: '.',
   testPathIgnorePatterns: ['/node_modules/'],
   transform: {
-    scriptPreprocessor: '<rootDir>/node_modules/jest-css-modules',
+    '^.+\\.(jsx|js)?$': '<rootDir>/node_modules/babel-jest',
+    '\\.css$': '<rootDir>/node_modules/jest-css-modules',
   },
+  setupFiles: ['./jest.setup.js'],
 };
