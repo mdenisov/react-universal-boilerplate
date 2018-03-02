@@ -55,11 +55,11 @@ const client = {
         },
       },
       {
-        test: /\.less$/,
+        test: /\.css$/,
         use: [
           { loader: 'style-loader' },
-          { loader: 'css-loader', options: { modules: true, importLoaders: 1, localIdentName: '[name]-[local]-[hash:5]' } },
-          { loader: 'less-loader' },
+          { loader: 'css-loader', options: { modules: true, importLoaders: 1, localIdentName: '[name]-[local]' } },
+          { loader: 'postcss-loader' },
         ],
       },
       {
@@ -113,73 +113,74 @@ const client = {
   ],
 };
 
-// const server = {
-//   context: path.resolve(__dirname, '../server'),
-//   devtool: 'eval-source-map',
-//   stats: {
-//     colors: true,
-//     hash: false,
-//     children: false,
-//     reasons: false,
-//     chunks: false,
-//     modules: false,
-//     warnings: false,
-//   },
-//   target: 'node',
-//
-//   entry: {
-//     renderer: ['babel-polyfill', './renderer.js'],
-//   },
-//
-//   output: {
-//     path: path.resolve(__dirname, '../server'),
-//     publicPath: '/',
-//     filename: 'SSR.js',
-//     libraryTarget: 'commonjs2',
-//   },
-//
-//   module: {
-//     rules: [
-//       {
-//         test: /\.js?$/,
-//         exclude: /(node_modules)/,
-//         use: {
-//           loader: 'babel-loader',
-//           options: {
-//             presets: ['env', 'react'],
-//             // plugins: [
-//             //   ['css-modules-transform', {
-//             //     generateScopedName: '[name]__[local]__[hash:base64:5]',
-//             //     extensions: ['.css'],
-//             //   }],
-//             // ],
-//           },
-//         },
-//       },
-//     ],
-//   },
-//
-//   plugins: [
-//     // Setup enviorment variables for client
-//     new webpack.EnvironmentPlugin({
-//       NODE_ENV: JSON.stringify('development'),
-//     }),
-//
-//     // Setup global variables for client
-//     new webpack.DefinePlugin({
-//       __CLIENT__: false,
-//       __SERVER__: true,
-//       __DEV__: true,
-//     }),
-//
-//     new webpack.HotModuleReplacementPlugin(),
-//     new webpack.NamedModulesPlugin(),
-//   ],
-// };
+const server = {
+  context: path.resolve(__dirname, '../server'),
+  devtool: 'eval-source-map',
+  stats: {
+    colors: true,
+    hash: false,
+    children: false,
+    reasons: false,
+    chunks: false,
+    modules: false,
+    warnings: false,
+  },
+  target: 'node',
+
+  entry: {
+    renderer: ['babel-polyfill', './renderer.js'],
+  },
+
+  output: {
+    path: path.resolve(__dirname, '../server'),
+    publicPath: '/',
+    filename: 'SSR.js',
+    libraryTarget: 'commonjs2',
+  },
+
+  module: {
+    rules: [
+      {
+        test: /\.js?$/,
+        exclude: /(node_modules)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['env', 'react'],
+            plugins: [
+              ['css-modules-transform', {
+                generateScopedName: '[name]-[local]',
+                extensions: ['.css'],
+                rootDir: path.resolve(__dirname, '../client'),
+              }],
+            ],
+          },
+        },
+      },
+    ],
+  },
+
+  plugins: [
+    // Setup enviorment variables for client
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: JSON.stringify('development'),
+    }),
+
+    // Setup global variables for client
+    new webpack.DefinePlugin({
+      __CLIENT__: false,
+      __SERVER__: true,
+      __DEV__: true,
+    }),
+
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
+  ],
+};
 
 if (process.env.NODE_ENV === 'inspect') {
   client.plugins.push(new BundleAnalyzerPlugin());
 }
 
-// module.exports = [client, server];
-module.exports = [client];
+module.exports = [client, server];
+// module.exports = [client];

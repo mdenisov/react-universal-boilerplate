@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../about.styles.less';
+import styles from '../about.styles.css';
 
 const About = () => (
   <div className={styles.card}>

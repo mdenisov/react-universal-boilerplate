@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
 
-import styles from './app.styles.less';
+import styles from './app.styles.css';
 
 class Main extends PureComponent {
   renderNavigation() {

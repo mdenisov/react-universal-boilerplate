@@ -1,6 +1,6 @@
 import React from 'react';
 
-import styles from '../contacts.styles.less';
+import styles from '../contacts.styles.css';
 
 const Contacts = () => (
   <div className={styles.card}>

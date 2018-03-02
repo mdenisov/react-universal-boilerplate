@@ -11,8 +11,8 @@ const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // e
 // Local Imports
 const routes = require('./routes');
 const webpackConfig = require('../webpack/config.dev')[0];
-// const SSR = require('./SSR').default;
-const SSR = require('./renderer').default;
+const SSR = require('./SSR').default;
+// const SSR = require('./renderer').default;
 const assets = require('../public/dist/webpack-assets.json');
 
 process.on('unhandledRejection', (reason, p) => {

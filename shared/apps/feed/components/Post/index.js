@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import styles from './post.styles.less';
+import styles from './post.styles.css';
 
 const Post = ({
   name, slug, title, content, onDelete,

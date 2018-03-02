@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import * as actions from '../feed.module';
 import Post from '../components/Post/index';
 
-import styles from '../feed.styles.less';
+import styles from '../feed.styles.css';
 
 class Feed extends PureComponent {
   constructor() {
