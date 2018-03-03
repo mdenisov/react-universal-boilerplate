@@ -3,10 +3,10 @@
   padding: 20px 20px 12px;
   margin-bottom: 14px;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .1);
   }
 }
 
@@ -26,4 +26,9 @@
 
 .description {
   margin-bottom: 20px;
+}
+
+.line1 {
+  margin-bottom: 10px;
+  border-bottom: 1px solid;
 }
