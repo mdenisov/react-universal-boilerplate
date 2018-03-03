@@ -9,6 +9,8 @@ const Router = require('koa-router');
 const cookie = require('koa-cookie').default;
 const compress = require('koa-compress');
 const bodyParser = require('koa-bodyparser');
+const conditional = require('koa-conditional-get'); // eslint-disable-line
+const etag = require('koa-etag'); // eslint-disable-line
 const compressible = require('compressible'); // eslint-disable-line
 const zlib = require('zlib'); // eslint-disable-line
 const webpack = require('webpack'); // eslint-disable-line
@@ -75,7 +77,9 @@ app
     filter: type => !(/event-stream/i.test(type)) && compressible(type),
     threshold: 2048,
     flush: zlib.Z_SYNC_FLUSH,
-  }));
+  }))
+  .use(conditional())
+  .use(etag());
 
 // API
 app
@@ -89,6 +93,17 @@ router.get('*', SSR({ assets }));
 app
   .use(router.routes())
   .use(router.allowedMethods());
+
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (error) {
+    console.log(error.message, error.stack);
+
+    ctx.body = error.message;
+    ctx.status = error.status || 500;
+  }
+});
 
 app.on('error', (error) => {
   if (error.message !== 'read ECONNRESET') {
