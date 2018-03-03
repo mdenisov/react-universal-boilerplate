@@ -3,8 +3,14 @@ const boxen = require('boxen');
 const chalk = require('chalk');
 const Koa = require('koa');
 const serve = require('koa-static');
+const favicon = require('koa-favicon');
 const Router = require('koa-router');
+// const cors = require('@koa/cors');
+const cookie = require('koa-cookie').default;
+const compress = require('koa-compress');
 const bodyParser = require('koa-bodyparser');
+const compressible = require('compressible'); // eslint-disable-line
+const zlib = require('zlib'); // eslint-disable-line
 const webpack = require('webpack'); // eslint-disable-line
 const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
 
@@ -28,9 +34,6 @@ const { NODE_ENV } = process.env;
 // Initialize Express App
 const app = new Koa();
 const router = new Router();
-
-// Server public assets
-app.use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }));
 
 // HMR Stuff
 if (NODE_ENV === 'development') {
@@ -64,8 +67,19 @@ if (NODE_ENV === 'development') {
   }));
 }
 
+// Server public assets
+app
+  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), { maxage: 0 }))
+  .use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }))
+  .use(compress({
+    filter: type => !(/event-stream/i.test(type)) && compressible(type),
+    threshold: 2048,
+    flush: zlib.Z_SYNC_FLUSH,
+  }));
+
 // API
 app
+  .use(cookie())
   .use(bodyParser())
   .use(routes.posts.routes())
   .use(routes.posts.allowedMethods());
