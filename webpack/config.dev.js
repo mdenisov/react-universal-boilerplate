@@ -30,7 +30,7 @@ const client = {
 
   output: {
     path: path.resolve(__dirname, '../public/dist'),
-    publicPath: '/',
+    publicPath: 'http://localhost:8000',
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
   },
