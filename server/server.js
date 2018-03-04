@@ -11,10 +11,12 @@ const compress = require('koa-compress');
 const bodyParser = require('koa-bodyparser');
 const conditional = require('koa-conditional-get'); // eslint-disable-line
 const etag = require('koa-etag'); // eslint-disable-line
+const logger = require('koa-logger'); // eslint-disable-line
 const compressible = require('compressible'); // eslint-disable-line
 const zlib = require('zlib'); // eslint-disable-line
 const webpack = require('webpack'); // eslint-disable-line
 const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
+const debug = require('debug')('server'); // eslint-disable-line
 
 // Local Imports
 const routes = require('./routes');
@@ -71,6 +73,7 @@ if (NODE_ENV === 'development') {
 
 // Server public assets
 app
+  .use(logger())
   .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), { maxage: 0 }))
   .use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }))
   .use(compress({
@@ -98,7 +101,7 @@ app.use(async (ctx, next) => {
   try {
     await next();
   } catch (error) {
-    console.log(error.message, error.stack);
+    debug(error.message, error.stack);
 
     ctx.body = error.message;
     ctx.status = error.status || 500;
@@ -107,7 +110,7 @@ app.use(async (ctx, next) => {
 
 app.on('error', (error) => {
   if (error.message !== 'read ECONNRESET') {
-    console.log(error);
+    debug(error);
   }
 });
 
