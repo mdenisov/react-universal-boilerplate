@@ -19,7 +19,7 @@ const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // e
 const debug = require('debug')('server'); // eslint-disable-line
 
 // Local Imports
-const apiLayer = require('./routes').default;
+const apiLayer = require('./api').default;
 const webpackConfig = require('../webpack/config.dev')[0];
 const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;
@@ -38,6 +38,19 @@ const { NODE_ENV } = process.env;
 // Initialize Express App
 const app = new Koa();
 const router = new Router();
+
+// error handling
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (error) {
+    debug(error.message, error.stack);
+
+    ctx.status = error.status || 500;
+    ctx.body = error.message;
+    ctx.app.emit('error', error, ctx);
+  }
+});
 
 // HMR Stuff
 if (NODE_ENV === 'development') {
@@ -96,18 +109,6 @@ router.get('*', SSR({ assets }));
 app
   .use(router.routes())
   .use(router.allowedMethods());
-
-// Error handling
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (error) {
-    debug(error.message, error.stack);
-
-    ctx.body = error.message;
-    ctx.status = error.status || 500;
-  }
-});
 
 app.on('error', (error) => {
   if (error.message !== 'read ECONNRESET') {
