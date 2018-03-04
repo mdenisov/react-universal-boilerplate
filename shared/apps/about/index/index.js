@@ -1,9 +1,11 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 
 import styles from '../about.styles.css';
 
 const About = () => (
   <div className={styles.card}>
+    <Helmet title="About" />
     <h1>About</h1>
     <div className={styles.description}>
       <p>

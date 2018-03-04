@@ -25,14 +25,13 @@ const render = ({ content, store }) => {
     <html lang="en">
       <head>
         <meta charSet="UTF-8" />
-        <title>Client | Build awesome apps ... faster️</title>
-
-        {styles}
 
         {helmet.base.toComponent()}
         {helmet.title.toComponent()}
         {helmet.meta.toComponent()}
         {helmet.link.toComponent()}
+
+        {styles}
       </head>
       <body>
         <div id="app">{content}</div>

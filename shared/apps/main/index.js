@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
+import Helmet from 'react-helmet';
 
 import styles from './app.styles.css';
 
@@ -29,6 +30,21 @@ class Main extends PureComponent {
   render() {
     return (
       <div className={styles.wrapper}>
+        <Helmet
+          title="Build something amazing!"
+          titleTemplate="%s | Client"
+          meta={[
+            { charset: 'utf-8' },
+            {
+              'http-equiv': 'X-UA-Compatible',
+              content: 'IE=edge',
+            },
+            {
+              name: 'viewport',
+              content: 'width=device-width, initial-scale=1',
+            },
+          ]}
+        />
         <div className={styles.menu}>
           { this.renderNavigation() }
         </div>

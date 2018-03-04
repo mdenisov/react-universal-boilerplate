@@ -1,9 +1,11 @@
 import React from 'react';
+import Helmet from 'react-helmet';
 
 import styles from '../contacts.styles.css';
 
 const Contacts = () => (
   <div className={styles.card}>
+    <Helmet title="Contacts" />
     <h1>Contacts</h1>
     <div className={styles.description}>
       React Helmet is a library that allows managing document meta from your

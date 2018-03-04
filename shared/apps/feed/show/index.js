@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Helmet from 'react-helmet';
 
 import * as actions from '../feed.module';
 import Post from '../components/Post/index';
@@ -41,6 +42,9 @@ class PostView extends PureComponent {
   render() {
     return (
       <div className={styles.wrapper}>
+        <Helmet
+          title={this.props.feed.currentPost.title || 'Blog'}
+        />
         {this.content()}
       </div>
     );
