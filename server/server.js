@@ -97,6 +97,7 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
+// Error handling
 app.use(async (ctx, next) => {
   try {
     await next();
