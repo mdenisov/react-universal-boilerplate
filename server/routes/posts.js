@@ -3,7 +3,6 @@ import PostController from '../controllers/post';
 
 const router = new Router({ prefix: '/api' });
 
-// Get all Posts
 router
   .get('/posts', PostController.getPosts)
   .get('/posts/:slug', PostController.getPost)
