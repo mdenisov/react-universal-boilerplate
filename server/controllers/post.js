@@ -21,7 +21,7 @@ const posts = [
  * @param ctx
  * @returns void
  */
-exports.getPosts = async function getPosts(ctx) {
+async function getPosts(ctx) {
   try {
     ctx.status = 200;
     ctx.body = { posts: posts.sort((a, b) => b.id - a.id) };
@@ -29,14 +29,14 @@ exports.getPosts = async function getPosts(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
-};
+}
 
 /**
  * Save a post
  * @param ctx
  * @returns void
  */
-exports.addPost = async function addPost(ctx) {
+async function addPost(ctx) {
   try {
     if (
       !ctx.request.body.post.name ||
@@ -63,14 +63,14 @@ exports.addPost = async function addPost(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
-};
+}
 
 /**
  * Get a single post by slug
  * @param ctx
  * @returns void
  */
-exports.getPost = async function getPost(ctx) {
+async function getPost(ctx) {
   try {
     const { slug } = ctx.params;
     const post = posts.find(item => item.slug === slug);
@@ -87,14 +87,14 @@ exports.getPost = async function getPost(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
-};
+}
 
 /**
  * Delete a post by slug
  * @param ctx
  * @returns void
  */
-exports.deletePost = async function deletePost(ctx) {
+async function deletePost(ctx) {
   try {
     const { slug } = ctx.params;
     const post = posts.find(item => item.slug === slug);
@@ -110,4 +110,11 @@ exports.deletePost = async function deletePost(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
+}
+
+export default {
+  getPosts,
+  getPost,
+  addPost,
+  deletePost,
 };

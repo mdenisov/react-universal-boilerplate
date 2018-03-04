@@ -19,7 +19,7 @@ const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // e
 const debug = require('debug')('server'); // eslint-disable-line
 
 // Local Imports
-const routes = require('./routes').default;
+const apiLayer = require('./routes').default;
 const webpackConfig = require('../webpack/config.dev')[0];
 const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;
@@ -84,12 +84,12 @@ app
   .use(conditional())
   .use(etag());
 
-// API
 app
   .use(cookie())
-  .use(bodyParser())
-  .use(routes.posts.routes())
-  .use(routes.posts.allowedMethods());
+  .use(bodyParser());
+
+// API
+apiLayer(app);
 
 // Server Side Rendering based on routes matched by React-router.
 router.get('*', SSR({ assets }));
