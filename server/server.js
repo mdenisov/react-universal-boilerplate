@@ -25,14 +25,6 @@ const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;
 const assets = require('../public/dist/webpack-assets.json');
 
-process.on('unhandledRejection', (reason, p) => {
-  if (reason.stack) {
-    console.error(reason.stack);
-  } else {
-    console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
-  }
-});
-
 const { NODE_ENV } = process.env;
 
 // Initialize Express App

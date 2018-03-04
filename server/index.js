@@ -9,5 +9,17 @@ global.__DEV__ = true;
 
 process.env.DEBUG = '*,-babel';
 
+process.on('unhandledRejection', (reason, p) => {
+  if (reason.stack) {
+    console.error(reason.stack);
+  } else {
+    console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
+  }
+});
+
+process.on('uncaughtException', (error) => {
+  console.error(`Uncaught Exception: ${error.message}`, error.stack);
+});
+
 // Run server
 require('./server');
