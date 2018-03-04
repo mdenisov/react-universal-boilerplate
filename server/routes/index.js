@@ -1,5 +1,5 @@
-const posts = require('./posts');
+import posts from './posts';
 
-module.exports = {
+export default {
   posts,
 };

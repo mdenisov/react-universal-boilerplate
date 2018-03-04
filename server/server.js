@@ -19,7 +19,7 @@ const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // e
 const debug = require('debug')('server'); // eslint-disable-line
 
 // Local Imports
-const routes = require('./routes');
+const routes = require('./routes').default;
 const webpackConfig = require('../webpack/config.dev')[0];
 const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;

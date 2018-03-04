@@ -1,18 +1,13 @@
-const Router = require('koa-router');
-const PostController = require('../controllers/post');
+import Router from 'koa-router';
+import PostController from '../controllers/post';
 
 const router = new Router({ prefix: '/api' });
 
 // Get all Posts
-router.get('/posts', PostController.getPosts);
+router
+  .get('/posts', PostController.getPosts)
+  .get('/posts/:slug', PostController.getPost)
+  .post('/posts', PostController.addPost)
+  .delete('/posts/:slug', PostController.deletePost);
 
-// Get one post by slug
-router.get('/posts/:slug', PostController.getPost);
-
-// Add a new Post
-router.post('/posts', PostController.addPost);
-
-// Delete a post by slug
-router.delete('/posts/:slug', PostController.deletePost);
-
-module.exports = router;
+export default router;
