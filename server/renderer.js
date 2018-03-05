@@ -5,6 +5,7 @@ import { renderRoutes } from 'react-router-config';
 import { Provider } from 'react-redux';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
+import debug from 'debug'; // eslint-disable-line
 
 import routes from '../shared/routes';
 import configureStore from '../shared/redux/store';
@@ -40,7 +41,7 @@ const render = ({ content, store, assets }) => { // eslint-disable-line
   );
 };
 
-export default function serverSideRenderer({ assets }) { // eslint-disable-line
+function serverSideRenderer({ assets }) { // eslint-disable-line
   return async function (ctx) {
     const store = configureStore();
     const { url } = ctx.request;
@@ -67,10 +68,12 @@ export default function serverSideRenderer({ assets }) { // eslint-disable-line
       ctx.status = 200;
       ctx.body = ReactDOMServer.renderToNodeStream(render({ content, assets, store }));
     } catch (error) {
-      console.error(error);
+      debug('SSR')(error);
 
       ctx.status = 500;
       ctx.body = error.message;
     }
   };
 }
+
+export default serverSideRenderer;
