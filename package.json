@@ -1,18 +1,48 @@
 {
-  "name": "sravni-client-next",
+  "name": "react-universal-boilerplate",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A starter boilerplate for an universal web application with the best development experience and best practices.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdenisov/react-universal-boilerplate"
+  },
+  "keywords": [
+    "starter",
+    "boilerpate",
+    "universal",
+    "react",
+    "redux",
+    "react router v4",
+    "koa",
+    "webpack v3",
+    "es6",
+    "code splitting",
+    "hot reloading",
+    "babel",
+    "postcss",
+    "jest",
+    "unit testing",
+    "performance optimizing"
+  ],
+  "main": "server/index.js",
+  "engines": {
+    "node": ">=6.0",
+    "npm": ">=3.0"
+  },
+  "author": "Maxim Denisov <maxim@denisov.in> (https://github.com/mdenisov)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mdenisov/react-universal-boilerplate/issues"
+  },
+  "homepage": "https://github.com/mdenisov/react-universal-boilerplate",
   "scripts": {
     "test": "NODE_ENV=test echo 'Running tests' && ./node_modules/.bin/jest --forceExit",
     "lint:js": "echo 'Running linter' && ./node_modules/.bin/eslint \"server/**/*.js\" \"shared/**/*.js\" \"client/**/*.js\" --fix",
     "lint:css": "echo 'Running linter' && ./node_modules/.bin/stylelint \"shared/**/*.css\" --fix",
-    "dev": "NODE_ENV=development ",
+    "dev": "npm run build:dev && npm run start:dev",
     "build:dev": "NODE_ENV=development ./node_modules/.bin/webpack --config ./webpack/config.dev.js --progress --colors",
     "start:dev": "NODE_ENV=development ./node_modules/.bin/nodemon server/index.js"
   },
-  "author": "Maxim Denisov",
-  "license": "ISC",
   "dependencies": {
     "@koa/cors": "^2.2.1",
     "boxen": "^1.3.0",
