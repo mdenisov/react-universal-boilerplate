@@ -82,9 +82,14 @@ if (NODE_ENV === 'development') {
 }
 
 // Server middlewares
+const options = {
+  gzip: NODE_ENV !== 'development',
+  maxage: NODE_ENV === 'development' ? 0 : 1000 * 60 * 60 * 24,
+};
+
 app
-  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), { maxage: 0 }))
-  .use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }))
+  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), options))
+  .use(serve(path.resolve(__dirname, '..', 'public'), options))
   .use(compress({
     filter: type => !(/event-stream/i.test(type)) && compressible(type),
     threshold: 2048,
