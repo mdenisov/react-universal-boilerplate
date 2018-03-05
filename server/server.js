@@ -3,7 +3,6 @@ const boxen = require('boxen');
 const chalk = require('chalk');
 const Koa = require('koa');
 const serve = require('koa-static');
-const mount = require('koa-mount');
 const favicon = require('koa-favicon');
 const Router = require('koa-router');
 // const cors = require('@koa/cors');
