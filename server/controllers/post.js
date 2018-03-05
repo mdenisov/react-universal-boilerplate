@@ -1,5 +1,3 @@
-// const Post = require('../models/post');
-
 const posts = [
   {
     id: 1, name: 'Admin', title: 'Events management in javascript', slug: 'events-management-in-javascript', content: '&lt;p&gt;Suppose I have my form section in html file and an onclick event is associated with one of the input of type submit ,so when submit input is clicked ,I have to call one function that is present in external javascript file.&lt;/p&gt;&lt;p&gt;Case 1: As per standard rule we should keep our script tag at the end because of effective page loading.&lt;/p&gt;&lt;p&gt;But suppose if we follow the case 1 scenario and some how that onclick event is triggered which I have mentioned above but external javascript file is still not loaded ,so it will definitely give an error.&lt;/p&gt;&lt;p&gt;So I was wondering Is there any effective solution to handle this kind of scenario i.e. onclick event will only triggered when all your external javascript file is loaded.&lt;/p&gt;',
@@ -23,7 +21,7 @@ const posts = [
  * @param ctx
  * @returns void
  */
-exports.getPosts = async function getPosts(ctx) {
+async function getPosts(ctx) {
   try {
     ctx.status = 200;
     ctx.body = { posts: posts.sort((a, b) => b.id - a.id) };
@@ -31,14 +29,14 @@ exports.getPosts = async function getPosts(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
-};
+}
 
 /**
  * Save a post
  * @param ctx
  * @returns void
  */
-exports.addPost = async function addPost(ctx) {
+async function addPost(ctx) {
   try {
     if (
       !ctx.request.body.post.name ||
@@ -65,14 +63,14 @@ exports.addPost = async function addPost(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
-};
+}
 
 /**
  * Get a single post by slug
  * @param ctx
  * @returns void
  */
-exports.getPost = async function getPost(ctx) {
+async function getPost(ctx) {
   try {
     const { slug } = ctx.params;
     const post = posts.find(item => item.slug === slug);
@@ -89,14 +87,14 @@ exports.getPost = async function getPost(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
-};
+}
 
 /**
  * Delete a post by slug
  * @param ctx
  * @returns void
  */
-exports.deletePost = async function deletePost(ctx) {
+async function deletePost(ctx) {
   try {
     const { slug } = ctx.params;
     const post = posts.find(item => item.slug === slug);
@@ -112,4 +110,11 @@ exports.deletePost = async function deletePost(ctx) {
     ctx.status = 500;
     ctx.body = e;
   }
+}
+
+export default {
+  getPosts,
+  getPost,
+  addPost,
+  deletePost,
 };

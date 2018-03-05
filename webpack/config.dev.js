@@ -6,7 +6,7 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'); // eslint-d
 
 const client = {
   context: path.resolve(__dirname, '../client'),
-  // devtool: 'eval-source-map',
+  devtool: 'eval-source-map',
   stats: {
     colors: true,
     hash: false,
@@ -30,7 +30,7 @@ const client = {
 
   output: {
     path: path.resolve(__dirname, '../public/dist'),
-    publicPath: '/',
+    publicPath: 'http://localhost:8000/dist/',
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
   },

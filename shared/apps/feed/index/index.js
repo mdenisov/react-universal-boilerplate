@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Helmet from 'react-helmet';
 
 import * as actions from '../feed.module';
 import Post from '../components/Post/index';
@@ -68,6 +69,7 @@ class Feed extends PureComponent {
   render() {
     return (
       <div>
+        <Helmet title="Blog" />
         <div>
           { this.content() }
         </div>

@@ -3,25 +3,27 @@ const boxen = require('boxen');
 const chalk = require('chalk');
 const Koa = require('koa');
 const serve = require('koa-static');
+const favicon = require('koa-favicon');
 const Router = require('koa-router');
+// const cors = require('@koa/cors');
+const cookie = require('koa-cookie').default;
+const compress = require('koa-compress');
 const bodyParser = require('koa-bodyparser');
+const conditional = require('koa-conditional-get'); // eslint-disable-line
+const etag = require('koa-etag'); // eslint-disable-line
+const logger = require('koa-logger'); // eslint-disable-line
+const compressible = require('compressible'); // eslint-disable-line
+const zlib = require('zlib'); // eslint-disable-line
 const webpack = require('webpack'); // eslint-disable-line
 const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
+const debug = require('debug')('server'); // eslint-disable-line
 
 // Local Imports
-const routes = require('./routes');
+const apiLayer = require('./api').default;
 const webpackConfig = require('../webpack/config.dev')[0];
 const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;
 const assets = require('../public/dist/webpack-assets.json');
-
-process.on('unhandledRejection', (reason, p) => {
-  if (reason.stack) {
-    console.error(reason.stack);
-  } else {
-    console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
-  }
-});
 
 const { NODE_ENV } = process.env;
 
@@ -29,8 +31,18 @@ const { NODE_ENV } = process.env;
 const app = new Koa();
 const router = new Router();
 
-// Server public assets
-app.use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }));
+// error handling
+app.use(async (ctx, next) => {
+  try {
+    await next();
+  } catch (error) {
+    debug(error.message, error.stack);
+
+    ctx.status = error.status || 500;
+    ctx.body = error.message;
+    ctx.app.emit('error', error, ctx);
+  }
+});
 
 // HMR Stuff
 if (NODE_ENV === 'development') {
@@ -64,11 +76,25 @@ if (NODE_ENV === 'development') {
   }));
 }
 
-// API
+// Server public assets
 app
-  .use(bodyParser())
-  .use(routes.posts.routes())
-  .use(routes.posts.allowedMethods());
+  .use(logger())
+  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), { maxage: 0 }))
+  .use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }))
+  .use(compress({
+    filter: type => !(/event-stream/i.test(type)) && compressible(type),
+    threshold: 2048,
+    flush: zlib.Z_SYNC_FLUSH,
+  }))
+  .use(conditional())
+  .use(etag());
+
+app
+  .use(cookie())
+  .use(bodyParser());
+
+// API
+apiLayer(app);
 
 // Server Side Rendering based on routes matched by React-router.
 router.get('*', SSR({ assets }));
@@ -78,7 +104,7 @@ app
 
 app.on('error', (error) => {
   if (error.message !== 'read ECONNRESET') {
-    console.log(error);
+    debug(error);
   }
 });
 
