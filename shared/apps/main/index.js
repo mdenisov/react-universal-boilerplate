@@ -8,6 +8,7 @@ import styles from './app.styles.css';
 
 class Main extends PureComponent {
   renderNavigation() {
+    console.log(styles);
     return (
       <div className={styles['menu-wrapper']}>
         {

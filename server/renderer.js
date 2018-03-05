@@ -9,17 +9,11 @@ import Helmet from 'react-helmet';
 import routes from '../shared/routes';
 import configureStore from '../shared/redux/store';
 import fetchData from '../server/utils/fetchData';
+import assetsUtil from '../server/utils/assets';
 
-const assets = require('../public/dist/webpack-assets.json');
-
-const render = ({ content, store }) => { // eslint-disable-line
+const render = ({ content, store, assets }) => { // eslint-disable-line
   const helmet = Helmet.rewind();
-  const styles = Object
-    .keys(assets)
-    .reverse()
-    .map(key => assets[key].css && (
-      <link key={key} rel="stylesheet" media="all" href={assets[key].css} charSet="UTF-8" />
-    ));
+  const resources = assetsUtil.prepare(assets);
 
   return (
     <html lang="en">
@@ -31,21 +25,14 @@ const render = ({ content, store }) => { // eslint-disable-line
         {helmet.meta.toComponent()}
         {helmet.link.toComponent()}
 
-        {styles}
+        {resources.styles}
       </head>
       <body>
         <div id="app">{content}</div>
 
         <script dangerouslySetInnerHTML={{ __html: `window.__INITIAL_STATE__=${serialize(store.getState())};` }} charSet="UTF-8" />
 
-        {
-          Object
-            .keys(assets)
-            .reverse()
-            .map(key => assets[key].js && (
-              <script key={key} src={assets[key].js} charSet="UTF-8" />
-            ))
-        }
+        {resources.scripts}
 
         {helmet.script.toString()}
       </body>
