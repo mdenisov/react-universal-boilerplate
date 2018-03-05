@@ -21,4 +21,4 @@ function sequence(items, consumer) {
   return runner();
 }
 
-module.exports = sequence;
+export default sequence;
