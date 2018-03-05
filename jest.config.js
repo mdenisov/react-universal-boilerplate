@@ -8,4 +8,5 @@ module.exports = {
     '\\.css$': '<rootDir>/node_modules/jest-css-modules',
   },
   setupFiles: ['./jest.setup.js'],
+  snapshotSerializers: ['enzyme-to-json/serializer'],
 };
