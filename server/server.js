@@ -5,7 +5,7 @@ const Koa = require('koa');
 const serve = require('koa-static');
 const favicon = require('koa-favicon');
 const Router = require('koa-router');
-// const cors = require('@koa/cors');
+const cors = require('@koa/cors');
 const cookie = require('koa-cookie').default;
 const compress = require('koa-compress');
 const bodyParser = require('koa-bodyparser');
@@ -81,12 +81,12 @@ if (NODE_ENV === 'development') {
   app.use(logger());
 }
 
-// Server middlewares
 const options = {
   gzip: NODE_ENV !== 'development',
   maxage: NODE_ENV === 'development' ? 0 : 1000 * 60 * 60 * 24,
 };
 
+// Server middlewares
 app
   .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), options))
   .use(serve(path.resolve(__dirname, '..', 'public'), options))
@@ -94,6 +94,9 @@ app
     filter: type => !(/event-stream/i.test(type)) && compressible(type),
     threshold: 2048,
     flush: zlib.Z_SYNC_FLUSH,
+  }))
+  .use(cors({
+    origin: true,
   }))
   .use(conditional())
   .use(etag());
@@ -108,10 +111,8 @@ app.use(async (ctx, next) => {
   const prefix = '/api/';
 
   if (ctx.path.startsWith(prefix)) {
-    // const prev = ctx.path;
-    const newPath = ctx.path.replace(prefix, '') || '/';
     ctx.mountPath = prefix;
-    ctx.path = newPath;
+    ctx.path = ctx.path.replace(prefix, '') || '/';
 
     debug('api')('request %s', ctx.path);
 
