@@ -68,6 +68,9 @@ export default function serverSideRenderer({ assets }) { // eslint-disable-line
       ctx.body = ReactDOMServer.renderToNodeStream(render({ content, assets, store }));
     } catch (error) {
       console.error(error);
+
+      ctx.status = 500;
+      ctx.body = error.message;
     }
   };
 }
