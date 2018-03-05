@@ -10,7 +10,7 @@ global.__DEV__ = true;
 if (process.env.NODE_ENV === 'test') {
   process.env.DEBUG = '-*';
 } else {
-  process.env.DEBUG = '*,-babel';
+  process.env.DEBUG = '*,-babel,-koa-static';
 }
 
 process.on('unhandledRejection', (reason, p) => {

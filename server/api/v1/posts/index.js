@@ -21,7 +21,7 @@ const posts = [
  * @param ctx
  * @returns void
  */
-async function getPosts(ctx) {
+async function list(ctx) {
   try {
     ctx.status = 200;
     ctx.body = { posts: posts.sort((a, b) => b.id - a.id) };
@@ -36,7 +36,7 @@ async function getPosts(ctx) {
  * @param ctx
  * @returns void
  */
-async function addPost(ctx) {
+async function create(ctx) {
   try {
     if (
       !ctx.request.body.post.name ||
@@ -70,9 +70,9 @@ async function addPost(ctx) {
  * @param ctx
  * @returns void
  */
-async function getPost(ctx) {
+async function get(ctx) {
   try {
-    const { slug } = ctx.params;
+    const { slug } = ctx.request.body;
     const post = posts.find(item => item.slug === slug);
 
     if (!post) {
@@ -94,9 +94,9 @@ async function getPost(ctx) {
  * @param ctx
  * @returns void
  */
-async function deletePost(ctx) {
+async function remove(ctx) {
   try {
-    const { slug } = ctx.params;
+    const { slug } = ctx.request.body;
     const post = posts.find(item => item.slug === slug);
 
     if (!post) {
@@ -113,8 +113,8 @@ async function deletePost(ctx) {
 }
 
 export default {
-  getPosts,
-  getPost,
-  addPost,
-  deletePost,
+  list,
+  get,
+  create,
+  remove,
 };

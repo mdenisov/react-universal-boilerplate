@@ -52,10 +52,13 @@ export function fetchAllPosts() {
   return async (dispatch) => {
     dispatch(fetchAllPostsRequest());
 
-    const url = 'http://localhost:8000/api/posts';
+    const url = 'http://localhost:8000/api/v1/posts/list';
 
     try {
-      const res = await fetch(url, { ...DEFAULT_OPTIONS })
+      const res = await fetch(url, {
+        ...DEFAULT_OPTIONS,
+        method: 'post',
+      })
         .then(response => response.json());
 
       dispatch(fetchAllPostsSuccess(res));
@@ -101,10 +104,16 @@ export function fetchSinglePost(slug) {
   return async (dispatch) => {
     dispatch(fetchSinglePostRequest());
 
-    const url = `http://localhost:8000/api/posts/${slug}`;
+    const url = 'http://localhost:8000/api/v1/posts/get';
 
     try {
-      const res = await fetch(url, { ...DEFAULT_OPTIONS })
+      const res = await fetch(url, {
+        ...DEFAULT_OPTIONS,
+        method: 'post',
+        body: JSON.stringify({
+          slug,
+        }),
+      })
         .then(response => response.json());
 
       dispatch(fetchSinglePostSuccess(res));
@@ -136,9 +145,12 @@ export function deletePost(slug) {
   return (dispatch) => {
     dispatch(removePost(slug));
 
-    fetch(`/api/posts/${slug}`, {
+    fetch('/api/v1/posts/remove', {
       ...DEFAULT_OPTIONS,
-      method: 'delete',
+      method: 'post',
+      body: JSON.stringify({
+        slug,
+      }),
     })
       .then(() => {})
       .catch(() => {});
@@ -153,7 +165,7 @@ function addPost(post) {
 
 export function createPost(title, content) {
   return (dispatch) => {
-    fetch('/api/posts', {
+    fetch('/api/v1/posts/create', {
       ...DEFAULT_OPTIONS,
       method: 'post',
       body: JSON.stringify({

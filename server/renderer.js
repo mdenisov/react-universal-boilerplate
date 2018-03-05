@@ -12,7 +12,7 @@ import fetchData from '../server/utils/fetchData';
 
 const assets = require('../public/dist/webpack-assets.json');
 
-const render = ({ content, store }) => {
+const render = ({ content, store }) => { // eslint-disable-line
   const helmet = Helmet.rewind();
   const styles = Object
     .keys(assets)

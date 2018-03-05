@@ -3,6 +3,7 @@ const boxen = require('boxen');
 const chalk = require('chalk');
 const Koa = require('koa');
 const serve = require('koa-static');
+const mount = require('koa-mount');
 const favicon = require('koa-favicon');
 const Router = require('koa-router');
 // const cors = require('@koa/cors');
@@ -16,10 +17,10 @@ const compressible = require('compressible'); // eslint-disable-line
 const zlib = require('zlib'); // eslint-disable-line
 const webpack = require('webpack'); // eslint-disable-line
 const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
-const debug = require('debug')('server'); // eslint-disable-line
+const debug = require('debug'); // eslint-disable-line
 
 // Local Imports
-const apiLayer = require('./api').default;
+const api = require('./api');
 const webpackConfig = require('../webpack/config.dev')[0];
 const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;
@@ -36,7 +37,7 @@ app.use(async (ctx, next) => {
   try {
     await next();
   } catch (error) {
-    debug(error.message, error.stack);
+    debug('server')(error.message, error.stack);
 
     ctx.status = error.status || 500;
     ctx.body = error.message;
@@ -98,8 +99,25 @@ app
   .use(cookie())
   .use(bodyParser());
 
+app.use(async function (ctx, next) {
+  const prefix = '/api/';
+
+  if (ctx.path.startsWith(prefix)) {
+    const prev = ctx.path;
+    const newPath = ctx.path.replace(prefix, '') || '/';
+    ctx.mountPath = prefix;
+    ctx.path = newPath;
+
+    debug('api')('request %s -> %s', prev, ctx.path);
+
+    return await api.apply(this, [ctx, next]);
+  }
+
+  await next();
+});
+
 // API
-apiLayer(app);
+// app.use(mount('/api/', api));
 
 // Server Side Rendering based on routes matched by React-router.
 router.get('*', SSR({ assets }));
