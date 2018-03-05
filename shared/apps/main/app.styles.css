@@ -14,8 +14,8 @@ h1, h2, h3, h4, h5, h6 {
   font-style: normal;
   font-weight: 400;
   line-height: 1.4;
-  margin-bottom: .5rem;
-  margin-top: .2rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.2rem;
   text-rendering: optimizeLegibility;
 }
 
@@ -50,16 +50,16 @@ button {
   padding: 4px 8px;
   border-radius: 6px;
   color: #2481d7;
-  border: 1px solid rgba(36,129,215,.4);
+  border: 1px solid rgba(36,129,215,0.4);
 
   &:hover {
-    border: 1px solid rgba(36,129,215,.6);
+    border: 1px solid rgba(36,129,215,0.6);
   }
 }
 
 .menu {
   position: fixed;
-  color: #ffffff;
+  color: #fff;
   background: #212121;
   top: 0;
   left: 0;
@@ -67,7 +67,7 @@ button {
   z-index: 1000;
   padding: 0;
   height: auto;
-  box-shadow: 0 4px 16px rgba(0,0,0,.04);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.04);
   max-height: 56px;
 }
 
@@ -81,14 +81,14 @@ button {
   padding: 20px 4px;
   font-size: 16px;
   line-height: 1;
-  color: hsla(0,0%,100%,.6);
+  color: hsla(0,0%,100%,0.6);
 
   &:hover {
-    color: hsla(0,0%,100%,.8);
+    color: hsla(0,0%,100%,0.8);
   }
 
   &--active {
-    color: hsla(0,0%,100%,.8);
+    color: hsla(0,0%,100%,0.8);
   }
 }
 

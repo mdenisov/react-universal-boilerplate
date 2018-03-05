@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test echo 'Running tests' && ./node_modules/.bin/jest --forceExit",
-    "lint": "echo 'Running linter' && ./node_modules/.bin/eslint \"server/**/*.js\" \"shared/**/*.js\" \"client/**/*.js\" --fix",
+    "lint:js": "echo 'Running linter' && ./node_modules/.bin/eslint \"server/**/*.js\" \"shared/**/*.js\" \"client/**/*.js\" --fix",
+    "lint:css": "echo 'Running linter' && ./node_modules/.bin/stylelint \"shared/**/*.css\" --fix",
     "dev": "NODE_ENV=development ",
     "build:dev": "NODE_ENV=development ./node_modules/.bin/webpack --config ./webpack/config.dev.js --progress --colors",
     "start:dev": "NODE_ENV=development ./node_modules/.bin/nodemon server/index.js"
@@ -81,6 +82,8 @@
     "postcss-nesting": "^4.2.1",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "0.19.1",
+    "stylelint": "^9.1.1",
+    "stylelint-config-standard": "^18.2.0",
     "supertest": "^3.0.0",
     "url-loader": "^0.6.2",
     "webpack": "^3.11.0",
