@@ -5,15 +5,7 @@
   border-radius: 4px;
   display: flex;
   align-items: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.wrapper {
-
-}
-
-.content {
-
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .form {
@@ -25,9 +17,10 @@
   flex-grow: 20;
   justify-content: space-between;
   align-items: flex-start;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.form input, .form textarea {
+.form input,
+.form textarea {
   width: 100%;
 }
