@@ -20,7 +20,7 @@ const debug = require('debug'); // eslint-disable-line
 
 // Local Imports
 const api = require('./api');
-const webpackConfig = require('../webpack/config.dev')[0];
+const webpackConfig = require('../tools/webpack/config.dev')[0];
 const SSR = require('./SSR').default;
 // const SSR = require('./renderer').default;
 const assets = require('../public/dist/webpack-assets.json');

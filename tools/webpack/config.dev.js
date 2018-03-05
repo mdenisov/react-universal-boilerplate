@@ -4,8 +4,13 @@ const AssetsPlugin = require('assets-webpack-plugin'); // eslint-disable-line
 const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin'); // eslint-disable-line
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer'); // eslint-disable-line
 
+const ROOT = path.resolve(__dirname, '../../');
+const CLIENT = path.resolve(ROOT, './client');
+const SERVER = path.resolve(ROOT, './server');
+const DIST = path.resolve(ROOT, './public/dist');
+
 const client = {
-  context: path.resolve(__dirname, '../client'),
+  context: CLIENT,
   devtool: 'eval-source-map',
   stats: {
     colors: true,
@@ -29,7 +34,7 @@ const client = {
   },
 
   output: {
-    path: path.resolve(__dirname, '../public/dist'),
+    path: DIST,
     publicPath: 'http://localhost:8000/dist/',
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
@@ -89,7 +94,7 @@ const client = {
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
 
-    new AssetsPlugin({ path: path.resolve(__dirname, '../public/dist') }),
+    new AssetsPlugin({ path: DIST }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: Infinity,
@@ -114,7 +119,7 @@ const client = {
 };
 
 const server = {
-  context: path.resolve(__dirname, '../server'),
+  context: SERVER,
   devtool: 'eval-source-map',
   stats: {
     colors: true,
@@ -132,7 +137,7 @@ const server = {
   },
 
   output: {
-    path: path.resolve(__dirname, '../server'),
+    path: SERVER,
     publicPath: '/',
     filename: 'SSR.js',
     libraryTarget: 'commonjs2',
@@ -151,7 +156,7 @@ const server = {
               ['css-modules-transform', {
                 generateScopedName: '[name]-[local]',
                 extensions: ['.css'],
-                rootDir: path.resolve(__dirname, '../client'),
+                rootDir: CLIENT,
               }],
             ],
           },
@@ -183,4 +188,3 @@ if (process.env.NODE_ENV === 'inspect') {
 }
 
 module.exports = [client, server];
-// module.exports = [client];
