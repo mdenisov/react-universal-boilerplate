@@ -98,25 +98,23 @@ app
   .use(cookie())
   .use(bodyParser());
 
-app.use(async function (ctx, next) {
+// API
+app.use(async (ctx, next) => {
   const prefix = '/api/';
 
   if (ctx.path.startsWith(prefix)) {
-    const prev = ctx.path;
+    // const prev = ctx.path;
     const newPath = ctx.path.replace(prefix, '') || '/';
     ctx.mountPath = prefix;
     ctx.path = newPath;
 
-    debug('api')('request %s -> %s', prev, ctx.path);
+    debug('api')('request %s', ctx.path);
 
-    return await api.apply(this, [ctx, next]);
+    return await api.apply(this, [ctx, next]); // eslint-disable-line
   }
 
   await next();
 });
-
-// API
-// app.use(mount('/api/', api));
 
 // Server Side Rendering based on routes matched by React-router.
 router.get('*', SSR({ assets }));

@@ -1,4 +1,3 @@
-import Koa from 'koa';
 import services from './services';
 
 function mapPathForService(availableServices = {}, url = []) {
@@ -27,11 +26,9 @@ function mapPathForService(availableServices = {}, url = []) {
   return (typeof actionAndParams.service === 'function') ? actionAndParams : notFound;
 }
 
-async function api(ctx, next) {
+export default async function api(ctx) {
   const urlPath = ctx.request.url.split('?')[0].split('/');
   const { service, params } = await mapPathForService(services, urlPath);
-
-  // await next();
 
   // console.log('api => ', urlPath, service, params);
 
@@ -46,9 +43,3 @@ async function api(ctx, next) {
   ctx.status = 404;
   ctx.body = 'NOT FOUND';
 }
-
-const app = new Koa();
-
-app.use(api);
-
-export default api;
