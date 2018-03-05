@@ -76,9 +76,13 @@ if (NODE_ENV === 'development') {
   }));
 }
 
-// Server public assets
+// Server request logging
+if (NODE_ENV === 'development') {
+  app.use(logger());
+}
+
+// Server middlewares
 app
-  .use(logger())
   .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), { maxage: 0 }))
   .use(serve(path.resolve(__dirname, '..', 'public'), { maxage: 0 }))
   .use(compress({
@@ -89,6 +93,7 @@ app
   .use(conditional())
   .use(etag());
 
+// Parsing request cookies and body
 app
   .use(cookie())
   .use(bodyParser());

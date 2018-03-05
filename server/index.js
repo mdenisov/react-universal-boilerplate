@@ -7,7 +7,11 @@ global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DEV__ = true;
 
-process.env.DEBUG = '*,-babel';
+if (process.env.NODE_ENV === 'test') {
+  process.env.DEBUG = '-*';
+} else {
+  process.env.DEBUG = '*,-babel';
+}
 
 process.on('unhandledRejection', (reason, p) => {
   if (reason.stack) {
