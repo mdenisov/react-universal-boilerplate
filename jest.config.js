@@ -7,6 +7,6 @@ module.exports = {
     '^.+\\.(jsx|js)?$': '<rootDir>/node_modules/babel-jest',
     '\\.css$': '<rootDir>/node_modules/jest-css-modules',
   },
-  setupFiles: ['./jest.setup.js'],
+  setupFiles: ['./tools/jest/setup.js'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
 };
