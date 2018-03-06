@@ -88,9 +88,7 @@ const client = {
 
   plugins: [
     // Setup environment variables for client
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: JSON.stringify('production'),
-    }),
+    new webpack.EnvironmentPlugin(['NODE_ENV', 'DEBUG']),
 
     // Setup global variables for client
     new webpack.DefinePlugin({
@@ -180,9 +178,7 @@ const server = {
 
   plugins: [
     // Setup enviorment variables for client
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: JSON.stringify('production'),
-    }),
+    new webpack.EnvironmentPlugin(['NODE_ENV', 'DEBUG']),
 
     // Setup global variables for client
     new webpack.DefinePlugin({
