@@ -107,6 +107,7 @@ const client = {
 
     // Setup global variables for client
     new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       __CLIENT__: true,
       __SERVER__: false,
       __DEV__: true,
@@ -173,6 +174,7 @@ const server = {
 
     // Setup global variables for client
     new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       __CLIENT__: false,
       __SERVER__: true,
       __DEV__: true,

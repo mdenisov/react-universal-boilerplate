@@ -7,7 +7,7 @@ global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DEV__ = true;
 
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
 } else {
   process.env.DEBUG = '*,-babel,-koa-static';

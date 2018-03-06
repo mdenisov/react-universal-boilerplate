@@ -87,6 +87,22 @@ const client = {
   },
 
   plugins: [
+    // Setup environment variables for client
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: JSON.stringify('production'),
+    }),
+
+    // Setup global variables for client
+    new webpack.DefinePlugin({
+      __CLIENT__: true,
+      __SERVER__: false,
+      __DEV__: false,
+    }),
+
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
     new MinifyPlugin({}, { test: /\.js?$/, comments: false }),
     new webpack.HashedModuleIdsPlugin(),
 
@@ -107,18 +123,6 @@ const client = {
       test: /\.js$|\.css$|\.html$/,
       threshold: 10240,
       minRatio: 0.8,
-    }),
-
-    // Setup enviorment variables for client
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: JSON.stringify('production'),
-    }),
-
-    // Setup global variables for client
-    new webpack.DefinePlugin({
-      __CLIENT__: true,
-      __SERVER__: false,
-      __DEV__: true,
     }),
 
     new webpack.NoEmitOnErrorsPlugin(),
@@ -175,9 +179,6 @@ const server = {
   },
 
   plugins: [
-    new MinifyPlugin({}, { test: /\.jsx?$/, comments: false }),
-    new webpack.HashedModuleIdsPlugin(),
-
     // Setup enviorment variables for client
     new webpack.EnvironmentPlugin({
       NODE_ENV: JSON.stringify('production'),
@@ -187,8 +188,15 @@ const server = {
     new webpack.DefinePlugin({
       __CLIENT__: false,
       __SERVER__: true,
-      __DEV__: true,
+      __DEV__: false,
     }),
+
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
+    }),
+    new MinifyPlugin({}, { test: /\.jsx?$/, comments: false }),
+    new webpack.HashedModuleIdsPlugin(),
   ],
 };
 

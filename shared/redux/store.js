@@ -26,7 +26,7 @@ export default ({ initialState = {} } = {}) => {
     enhancers,
   );
 
-  if (NODE_ENV === 'development') {
+  if (__CLIENT__ && NODE_ENV === 'development') {
     if (module.hot) {
       // Enable Webpack hot module replacement for reducers
       module.hot.accept('./reducers', () => {
