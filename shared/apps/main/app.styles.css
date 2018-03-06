@@ -92,10 +92,10 @@ button {
   &:hover {
     color: hsla(0, 0%, 100%, 0.8);
   }
+}
 
-  &--active {
-    color: hsla(0, 0%, 100%, 0.8);
-  }
+.menu-item--active {
+  color: hsla(0, 0%, 100%, 0.8);
 }
 
 .wrapper {

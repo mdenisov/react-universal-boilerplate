@@ -91,6 +91,16 @@ const client = {
   },
 
   plugins: [
+    // Setup environment variables for client
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
+
+    // Setup global variables for client
+    new webpack.DefinePlugin({
+      __CLIENT__: true,
+      __SERVER__: false,
+      __DEV__: true,
+    }),
+
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
 
@@ -98,19 +108,6 @@ const client = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: Infinity,
-    }),
-
-    // Setup enviorment variables for client
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: JSON.stringify('development'),
-    }),
-
-    // Setup global variables for client
-    new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
-      __CLIENT__: true,
-      __SERVER__: false,
-      __DEV__: true,
     }),
 
     new webpack.NoEmitOnErrorsPlugin(),
@@ -168,13 +165,10 @@ const server = {
 
   plugins: [
     // Setup enviorment variables for client
-    new webpack.EnvironmentPlugin({
-      NODE_ENV: JSON.stringify('development'),
-    }),
+    new webpack.EnvironmentPlugin(['NODE_ENV']),
 
     // Setup global variables for client
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
       __CLIENT__: false,
       __SERVER__: true,
       __DEV__: true,

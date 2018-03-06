@@ -1,29 +1,29 @@
-const path = require('path');
-const boxen = require('boxen');
-const chalk = require('chalk');
-const Koa = require('koa');
-const serve = require('koa-static');
-const favicon = require('koa-favicon');
-const Router = require('koa-router');
-const cors = require('@koa/cors');
-const cookie = require('koa-cookie').default;
-const compress = require('koa-compress');
-const bodyParser = require('koa-bodyparser');
-const conditional = require('koa-conditional-get');
-const etag = require('koa-etag');
-const logger = require('koa-logger'); // eslint-disable-line
-const compressible = require('compressible');
-const zlib = require('zlib');
-const webpack = require('webpack'); // eslint-disable-line
-const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
-const debug = require('debug'); // eslint-disable-line
+import path from 'path';
+import boxen from 'boxen';
+import chalk from 'chalk';
+import Koa from 'koa';
+import serve from 'koa-static';
+import favicon from 'koa-favicon';
+import Router from 'koa-router';
+import cors from '@koa/cors';
+import cookie from 'koa-cookie';
+import compress from 'koa-compress';
+import bodyParser from 'koa-bodyparser';
+import conditional from 'koa-conditional-get';
+import etag from 'koa-etag';
+import logger from 'koa-logger'; // eslint-disable-line
+import compressible from 'compressible';
+import zlib from 'zlib';
+import webpack from 'webpack'; // eslint-disable-line
+import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware'; // eslint-disable-line
+import debug from 'debug'; // eslint-disable-line
 
 // Local Imports
-const api = require('./api');
-const webpackConfig = require('../tools/webpack/config.dev')[0];
-const SSR = require('./SSR').default;
-// const SSR = require('./renderer').default;
-const assets = require('../public/dist/webpack-assets.json');
+import api from './api';
+import webpackConfigs from '../tools/webpack/config.dev';
+import SSR from './SSR';
+// import SSR from './renderer';
+import assets from '../public/dist/webpack-assets.json';
 
 const { NODE_ENV } = process.env;
 
@@ -65,10 +65,10 @@ if (NODE_ENV === 'development') {
     headers: {
       'Access-Control-Allow-Origin': 'http://localhost',
     },
-    publicPath: webpackConfig.output.publicPath,
+    publicPath: webpackConfigs[0].output.publicPath,
   };
 
-  const compiler = webpack(webpackConfig);
+  const compiler = webpack(webpackConfigs[0]);
 
   app.use(devMiddleware(compiler, middlewareOptions));
   app.use(hotMiddleware(compiler, {
