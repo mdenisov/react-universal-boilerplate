@@ -110,7 +110,7 @@ app
 app.use(async (ctx, next) => {
   const prefix = '/api/';
 
-  if (ctx.path.startsWith(prefix)) {
+  if (ctx.path.indexOf(prefix) === 0) {
     ctx.mountPath = prefix;
     ctx.path = ctx.path.replace(prefix, '') || '/';
 
