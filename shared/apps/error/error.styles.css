@@ -1,0 +1,18 @@
+.card {
+  background: #fff;
+  padding: 40px 40px;
+  margin-bottom: 14px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.title {
+  font-size: 22px;
+  line-height: normal;
+  margin: 0;
+  font-weight: 700;
+}
