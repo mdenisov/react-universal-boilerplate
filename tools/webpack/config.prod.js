@@ -38,6 +38,7 @@ const client = {
     publicPath: 'http://localhost:8000/dist/',
     filename: '[name].[hash:8].js',
     chunkFilename: '[name].bundle.[hash:8].js',
+    jsonpFunction: 'wsp',
   },
 
   module: {
@@ -151,6 +152,7 @@ const server = {
     publicPath: '/',
     filename: 'SSR.js',
     libraryTarget: 'commonjs2',
+    jsonpFunction: 'wsp',
   },
 
   module: {

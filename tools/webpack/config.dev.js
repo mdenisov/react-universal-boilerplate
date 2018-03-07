@@ -38,6 +38,7 @@ const client = {
     publicPath: 'http://localhost:8000/dist/',
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
+    jsonpFunction: 'wsp',
   },
 
   module: {
@@ -141,6 +142,7 @@ const server = {
     publicPath: '/',
     filename: 'SSR.js',
     libraryTarget: 'commonjs2',
+    jsonpFunction: 'wsp',
   },
 
   module: {
