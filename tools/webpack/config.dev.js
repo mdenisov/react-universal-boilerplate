@@ -10,6 +10,7 @@ const SERVER = path.resolve(ROOT, './server');
 const DIST = path.resolve(ROOT, './public/dist');
 
 const client = {
+  cache: true,
   context: CLIENT,
   devtool: 'eval-source-map',
   stats: {
