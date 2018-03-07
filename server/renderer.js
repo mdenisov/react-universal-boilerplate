@@ -52,15 +52,14 @@ function serverSideRenderer({ assets }) { // eslint-disable-line
       await fetchData({ routes, store, url });
 
       const staticContext = {};
-      const content = (
+      const AppComponent = (
         <Provider store={store}>
           <StaticRouter location={url} context={staticContext}>
             {renderRoutes(routes)}
           </StaticRouter>
         </Provider>
       );
-      // const html = await ReactDOMServer.renderToNodeStream(render({ content, assets, store }));
-      const html = ReactDOMServer.renderToString(render({ content, assets, store }));
+      const html = ReactDOMServer.renderToString(render({ content: AppComponent, assets, store }));
 
       // Check if the render result contains a redirect, if so we need to set
       // the specific status and redirect header and end the response
