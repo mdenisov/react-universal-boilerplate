@@ -51,27 +51,34 @@ function serverSideRenderer({ assets }) { // eslint-disable-line
       // Load data from server-side first
       await fetchData({ routes, store, url });
 
-      const context = {};
-
-      if (context.url) {
-        return ctx.redirect(context.url);
-      }
-
+      const staticContext = {};
       const content = (
         <Provider store={store}>
-          <StaticRouter location={url} context={context}>
+          <StaticRouter location={url} context={staticContext}>
             {renderRoutes(routes)}
           </StaticRouter>
         </Provider>
       );
 
-      ctx.status = 200;
+      // Check if the render result contains a redirect, if so we need to set
+      // the specific status and redirect header and end the response
+      if (staticContext.url) {
+        ctx.status = 301;
+        return ctx.redirect(staticContext.url);
+      }
+
+      // Check page status
+      const status = staticContext.status === '404' ? 404 : 200;
+
+      ctx.status = status;
       ctx.body = ReactDOMServer.renderToNodeStream(render({ content, assets, store }));
     } catch (error) {
       debug('SSR')(error);
 
       ctx.status = 500;
       ctx.body = error.message;
+
+      // console.error(chalk.red(`==> 😭  Rendering routes error: ${error}`));
     }
   };
 }
