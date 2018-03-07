@@ -59,6 +59,8 @@ function serverSideRenderer({ assets }) { // eslint-disable-line
           </StaticRouter>
         </Provider>
       );
+      // const html = await ReactDOMServer.renderToNodeStream(render({ content, assets, store }));
+      const html = ReactDOMServer.renderToString(render({ content, assets, store }));
 
       // Check if the render result contains a redirect, if so we need to set
       // the specific status and redirect header and end the response
@@ -68,10 +70,8 @@ function serverSideRenderer({ assets }) { // eslint-disable-line
       }
 
       // Check page status
-      const status = staticContext.status === '404' ? 404 : 200;
-
-      ctx.status = status;
-      ctx.body = ReactDOMServer.renderToNodeStream(render({ content, assets, store }));
+      ctx.status = staticContext.status === '404' ? 404 : 200;
+      ctx.body = html;
     } catch (error) {
       debug('SSR')(error);
 
