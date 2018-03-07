@@ -4,10 +4,6 @@ branches:
   only:
     - master
 
-env:
-  - NODE_ENV=production
-  - DEBUG="-*"
-
 node_js:
   - "7"
   - "8"
