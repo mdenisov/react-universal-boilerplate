@@ -13,7 +13,6 @@ import conditional from 'koa-conditional-get';
 import etag from 'koa-etag';
 import logger from 'koa-logger'; // eslint-disable-line
 import compressible from 'compressible';
-import zlib from 'zlib';
 import webpack from 'webpack'; // eslint-disable-line
 import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware'; // eslint-disable-line
 import debug from 'debug'; // eslint-disable-line
@@ -93,7 +92,6 @@ app
   .use(compress({
     filter: type => !(/event-stream/i.test(type)) && compressible(type),
     threshold: 2048,
-    flush: zlib.Z_SYNC_FLUSH,
   }))
   .use(cors({
     origin: true,
