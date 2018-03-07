@@ -12,10 +12,8 @@ function mapPathForService(availableServices = {}, url = []) {
     let res = notFound;
     if (prev.service && prev.service[current]) {
       res = { service: prev.service[current], params: [] }; // go deeper
-    } else {
-      if (typeof prev.service === 'function') {
-        res = { service: prev.service, params: prev.params.concat(current) }; // params are found
-      }
+    } else if (typeof prev.service === 'function') {
+      res = { service: prev.service, params: prev.params.concat(current) }; // params are found
     }
 
     return res;
@@ -37,7 +35,7 @@ export default async function api(ctx) {
   if (service) {
     ctx.params = params;
 
-    return await service(ctx);
+    return await service(ctx); // eslint-disable-line
   }
 
   ctx.status = 404;
