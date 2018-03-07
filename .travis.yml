@@ -1,3 +1,6 @@
+cache:
+  yarn: true
+
 language: node_js
 
 branches:
