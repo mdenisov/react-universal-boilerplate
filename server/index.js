@@ -22,6 +22,7 @@ if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production') {
   process.env.DEBUG = '*,-babel,-koa-static';
 }
 
+
 process.on('unhandledRejection', (reason, p) => {
   if (reason.stack) {
     console.error(reason.stack);
@@ -34,7 +35,8 @@ process.on('uncaughtException', (error) => {
   console.error(`Uncaught Exception: ${error.message}`, error.stack);
 });
 
-// Run server
+
+// Create server instance
 const server = new Server({
   favicon: path.resolve(__dirname, '../public/favicon.ico'),
   static: path.resolve(__dirname, '../public'),
@@ -44,6 +46,7 @@ const server = new Server({
   webpack,
 });
 
+// Run server
 server.listen(8000);
 
 module.exports = server;
