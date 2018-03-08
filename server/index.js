@@ -12,7 +12,7 @@ global.__DEV__ = true;
 
 const Server = require('./server');
 const api = require('./api');
-const renderer = require('./SSR').default;
+const SSR = require('./SSR').default;
 const assets = require('../public/dist/webpack-assets.json');
 const webpack = require('../tools/webpack/config.dev')[0];
 
@@ -41,8 +41,7 @@ const server = new Server({
   favicon: path.resolve(__dirname, '../public/favicon.ico'),
   static: path.resolve(__dirname, '../public'),
   api,
-  renderer,
-  assets,
+  renderer: SSR({ assets }),
   webpack,
 });
 

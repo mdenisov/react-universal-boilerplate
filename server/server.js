@@ -28,7 +28,6 @@ class Server {
       env: 'development',
       favicon: {},
       static: {},
-      assets: {},
       routes: false,
       cors: {},
       timeoutMs: 3000,
@@ -127,16 +126,6 @@ class Server {
       }
     });
 
-    // mount the app's defined and nested routes
-    if (this.config.routes) {
-      if (_isFunction(this.config.routes.routes)) {
-        app.use(this.config.routes.routes());
-        app.use(this.config.routes.allowMethods());
-      } else {
-        app.use(this.config.routes);
-      }
-    }
-
     // API
     if (this.config.api && _isFunction(this.config.api)) {
       app.use(async (ctx, next) => {
@@ -154,11 +143,21 @@ class Server {
       });
     }
 
+    // mount the app's defined and nested routes
+    if (this.config.routes) {
+      if (_isFunction(this.config.routes.routes)) {
+        app.use(this.config.routes.routes());
+        app.use(this.config.routes.allowMethods());
+      } else {
+        app.use(this.config.routes);
+      }
+    }
+
     // Server Side Rendering based on routes matched by React-router.
     if (this.config.renderer && _isFunction(this.config.renderer)) {
       // initialize the app router
       const router = new Router();
-      router.get('*', this.config.renderer({ assets: this.config.assets }));
+      router.get('*', this.config.renderer);
 
       app.use(router.routes());
       app.use(router.allowedMethods());
