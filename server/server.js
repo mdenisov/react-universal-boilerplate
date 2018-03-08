@@ -5,14 +5,17 @@ import Koa from 'koa';
 import serve from 'koa-static';
 import favicon from 'koa-favicon';
 import Router from 'koa-router';
-import cors from '@koa/cors';
+import cors from 'kcors';
 import cookie from 'koa-cookie';
 import compress from 'koa-compress';
 import bodyParser from 'koa-bodyparser';
 import conditional from 'koa-conditional-get';
 import etag from 'koa-etag';
 import logger from 'koa-logger'; // eslint-disable-line
+import responseTime from 'koa-response-time'; // eslint-disable-line
+import errorHandler from 'koa-better-error-handler';
 import compressible from 'compressible';
+import helmet from 'koa-helmet';
 import webpack from 'webpack'; // eslint-disable-line
 import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware'; // eslint-disable-line
 import debug from 'debug'; // eslint-disable-line
@@ -30,18 +33,8 @@ const { NODE_ENV } = process.env;
 const app = new Koa();
 const router = new Router();
 
-// error handling
-app.use(async (ctx, next) => {
-  try {
-    await next();
-  } catch (error) {
-    debug('server')(error.message, error.stack);
-
-    ctx.status = error.status || 500;
-    ctx.body = error.message;
-    ctx.app.emit('error', error, ctx);
-  }
-});
+// override koa's undocumented error handler
+app.context.onerror = errorHandler;
 
 // HMR Stuff
 if (NODE_ENV === 'development') {
@@ -77,7 +70,9 @@ if (NODE_ENV === 'development') {
 
 // Server request logging
 if (NODE_ENV === 'development') {
-  app.use(logger());
+  app
+    .use(logger())
+    .use(responseTime());
 }
 
 const options = {
@@ -87,16 +82,15 @@ const options = {
 
 // Server middlewares
 app
-  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), options))
-  .use(serve(path.resolve(__dirname, '..', 'public'), options))
   .use(compress({
     filter: type => !(/event-stream/i.test(type)) && compressible(type),
     threshold: 2048,
   }))
-  .use(cors({
-    origin: true,
-  }))
+  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), options))
+  .use(serve(path.resolve(__dirname, '..', 'public'), options))
+  .use(cors())
   .use(conditional())
+  .use(helmet())
   .use(etag());
 
 // Parsing request cookies and body
