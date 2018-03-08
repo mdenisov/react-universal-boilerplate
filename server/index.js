@@ -1,11 +1,20 @@
 // Allows you to use the full set of ES6 features on server-side (place it before anything else)
 // require('babel-polyfill'); // eslint-disable-line
+
 // Allows you to precompile ES6 syntax
 require('babel-register'); // eslint-disable-line
+
+const path = require('path'); // eslint-disable-line
 
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DEV__ = true;
+
+const Server = require('./server');
+const api = require('./api');
+const renderer = require('./SSR').default;
+const assets = require('../public/dist/webpack-assets.json');
+const webpack = require('../tools/webpack/config.dev')[0];
 
 if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
@@ -26,4 +35,15 @@ process.on('uncaughtException', (error) => {
 });
 
 // Run server
-require('./server');
+const server = new Server({
+  favicon: path.resolve(__dirname, '../public/favicon.ico'),
+  static: path.resolve(__dirname, '../public'),
+  api,
+  renderer,
+  assets,
+  webpack,
+});
+
+server.listen(8000);
+
+module.exports = server;

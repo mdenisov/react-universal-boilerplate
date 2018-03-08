@@ -1,4 +1,4 @@
-import path from 'path';
+import http from 'http';
 import boxen from 'boxen';
 import chalk from 'chalk';
 import Koa from 'koa';
@@ -11,138 +11,191 @@ import compress from 'koa-compress';
 import bodyParser from 'koa-bodyparser';
 import conditional from 'koa-conditional-get';
 import etag from 'koa-etag';
-import logger from 'koa-logger'; // eslint-disable-line
+import koaLogger from 'koa-logger'; // eslint-disable-line
 import responseTime from 'koa-response-time'; // eslint-disable-line
 import errorHandler from 'koa-better-error-handler';
+import Timeout from 'koa-better-timeout';
 import compressible from 'compressible';
 import helmet from 'koa-helmet';
 import webpack from 'webpack'; // eslint-disable-line
 import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware'; // eslint-disable-line
 import debug from 'debug'; // eslint-disable-line
+import _isFunction from 'lodash/isFunction'; // eslint-disable-line
 
-// Local Imports
-import api from './api';
-import webpackConfigs from '../tools/webpack/config.dev';
-import SSR from './SSR';
-// import SSR from './renderer';
-import assets from '../public/dist/webpack-assets.json';
+class Server {
+  constructor(config) {
+    this.config = Object.assign({
+      env: 'development',
+      favicon: {},
+      static: {},
+      assets: {},
+      routes: false,
+      cors: {},
+      timeoutMs: 3000,
+      webpack: {},
+    }, config);
 
-const { NODE_ENV } = process.env;
+    const cacheOptions = {
+      gzip: this.config.env !== 'development',
+      maxage: this.config.env === 'development' ? 0 : 1000 * 60 * 60 * 24,
+    };
 
-// Initialize Express App
-const app = new Koa();
-const router = new Router();
+    // initialize the app
+    const app = new Koa();
 
-// override koa's undocumented error handler
-app.context.onerror = errorHandler;
+    // HMR Stuff
+    if (this.config.env === 'development' && this.config.webpack) {
+      const middlewareOptions = {
+        stats: {
+          colors: true,
+          hash: false,
+          children: false,
+          reasons: false,
+          chunks: false,
+          modules: false,
+          warnings: false,
+          timings: false,
+          version: false,
+        },
+        hot: true,
+        quiet: false,
+        noInfo: false,
+        lazy: false,
+        headers: {
+          'Access-Control-Allow-Origin': 'http://localhost',
+        },
+        publicPath: this.config.webpack.output.publicPath,
+      };
+      const compiler = webpack(this.config.webpack);
 
-// HMR Stuff
-if (NODE_ENV === 'development') {
-  const middlewareOptions = {
-    stats: {
-      colors: true,
-      hash: false,
-      children: false,
-      reasons: false,
-      chunks: false,
-      modules: false,
-      warnings: false,
-      timings: false,
-      version: false,
-    },
-    hot: true,
-    quiet: false,
-    noInfo: false,
-    lazy: false,
-    headers: {
-      'Access-Control-Allow-Origin': 'http://localhost',
-    },
-    publicPath: webpackConfigs[0].output.publicPath,
-  };
+      app.use(devMiddleware(compiler, middlewareOptions));
+      app.use(hotMiddleware(compiler, {
+        log: false,
+      }));
+    }
 
-  const compiler = webpack(webpackConfigs[0]);
+    // favicons
+    app.use(favicon(this.config.favicon, cacheOptions));
 
-  app.use(devMiddleware(compiler, middlewareOptions));
-  app.use(hotMiddleware(compiler, {
-    log: false,
-  }));
-}
+    // serve static assets
+    app.use(serve(this.config.static, cacheOptions));
 
-// Server request logging
-if (NODE_ENV === 'development') {
-  app
-    .use(logger())
-    .use(responseTime());
-}
+    // compress/gzip
+    app.use(compress({
+      filter: type => !(/event-stream/i.test(type)) && compressible(type),
+      threshold: 2048,
+    }));
 
-const options = {
-  gzip: NODE_ENV !== 'development',
-  maxage: NODE_ENV === 'development' ? 0 : 1000 * 60 * 60 * 24,
-};
+    // override koa's undocumented error handler
+    app.context.onerror = errorHandler;
 
-// Server middlewares
-app
-  .use(compress({
-    filter: type => !(/event-stream/i.test(type)) && compressible(type),
-    threshold: 2048,
-  }))
-  .use(favicon(path.resolve(__dirname, '..', 'public', 'favicon.ico'), options))
-  .use(serve(path.resolve(__dirname, '..', 'public'), options))
-  .use(cors())
-  .use(conditional())
-  .use(helmet())
-  .use(etag());
+    // response time
+    app.use(responseTime());
 
-// Parsing request cookies and body
-app
-  .use(cookie())
-  .use(bodyParser());
+    // request logger with custom logger
+    app.use(koaLogger());
 
-// API
-app.use(async (ctx, next) => {
-  const prefix = '/api/';
+    // conditional-get
+    app.use(conditional());
 
-  if (ctx.path.indexOf(prefix) === 0) {
-    ctx.mountPath = prefix;
-    ctx.path = ctx.path.replace(prefix, '') || '/';
+    // etag
+    app.use(etag());
 
-    debug('api')('request %s', ctx.path);
+    // cors
+    app.use(cors(this.config.cors));
 
-    return await api.apply(this, [ctx, next]); // eslint-disable-line
+    // security
+    app.use(helmet());
+
+    // cookie parser
+    app.use(cookie());
+
+    // body parser
+    app.use(bodyParser());
+
+    // configure timeout
+    app.use(async (ctx, next) => {
+      try {
+        const timeout = new Timeout({
+          ms: this.config.timeoutMs,
+          message: 'REQUEST_TIMED_OUT',
+        });
+
+        await timeout.middleware(ctx, next);
+      } catch (err) {
+        ctx.throw(err);
+      }
+    });
+
+    // mount the app's defined and nested routes
+    if (this.config.routes) {
+      if (_isFunction(this.config.routes.routes)) {
+        app.use(this.config.routes.routes());
+        app.use(this.config.routes.allowMethods());
+      } else {
+        app.use(this.config.routes);
+      }
+    }
+
+    // API
+    if (this.config.api && _isFunction(this.config.api)) {
+      app.use(async (ctx, next) => {
+        const prefix = '/api/';
+
+        if (ctx.path.indexOf(prefix) === 0) {
+          ctx.path = ctx.path.replace(prefix, '') || '/';
+
+          debug('api')('request %s', ctx.path);
+
+          return await this.config.api.apply(this, [ctx, next]); // eslint-disable-line
+        }
+
+        await next();
+      });
+    }
+
+    // Server Side Rendering based on routes matched by React-router.
+    if (this.config.renderer && _isFunction(this.config.renderer)) {
+      // initialize the app router
+      const router = new Router();
+      router.get('*', this.config.renderer({ assets: this.config.assets }));
+
+      app.use(router.routes());
+      app.use(router.allowedMethods());
+    }
+
+    // expose app and server
+    this.app = app;
+    this.server = http.createServer(app.callback());
   }
 
-  await next();
-});
+  listen(port, fn) {
+    this.server = this.server.listen(port, () => {
+      if (_isFunction(fn)) {
+        fn();
+      }
 
-// Server Side Rendering based on routes matched by React-router.
-router.get('*', SSR({ assets }));
-app
-  .use(router.routes())
-  .use(router.allowedMethods());
-
-app.on('error', (error) => {
-  if (error.message !== 'read ECONNRESET') {
-    debug(error);
-  }
-});
-
-if (NODE_ENV !== 'test') {
-// Testing does not require you to listen on a port
-  app.listen(8000, (error) => {
-    if (!error) {
       const message = [
-        `App is running in ${chalk.bold.yellow(NODE_ENV)} mode\n`,
+        `App is running in ${chalk.bold.yellow(this.config.env)} mode\n`,
         `Open ${chalk.bold.yellow('http://localhost:8000')} in a browser to view the app.\n`,
         'Build something amazing!',
       ];
 
-      console.log(boxen(chalk.green(message.join('')), {
+      console.info(boxen(chalk.green(message.join('')), {
         padding: 1,
         borderColor: 'green',
         margin: 1,
       }));
-    }
-  });
+    });
+
+    return this.server;
+  }
+
+  close(fn) {
+    this.server.close(fn);
+
+    return this;
+  }
 }
 
-module.exports = app;
+export default Server;
