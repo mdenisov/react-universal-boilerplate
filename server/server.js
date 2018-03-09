@@ -6,7 +6,6 @@ import serve from 'koa-static';
 import favicon from 'koa-favicon';
 import Router from 'koa-router';
 import cors from 'kcors';
-import cookie from 'koa-cookie';
 import compress from 'koa-compress';
 import bodyParser from 'koa-bodyparser';
 import conditional from 'koa-conditional-get';
@@ -30,7 +29,6 @@ class Server {
       favicon: false,
       static: false,
       cors: {},
-      timeout: 3000,
       webpack: {},
     }, config);
 
@@ -38,9 +36,12 @@ class Server {
       throw new Error('renderer was not a function');
     }
 
+    const IS_DEV = this.config.env === 'development';
+    const IS_PROD = this.config.env === 'production';
+
     const cacheOptions = {
-      gzip: this.config.env !== 'development',
-      maxage: this.config.env === 'development' ? 0 : 1000 * 60 * 60 * 24,
+      gzip: !IS_DEV,
+      maxage: IS_DEV ? 0 : 1000 * 60 * 60 * 24,
     };
 
     // initialize the app
@@ -50,7 +51,7 @@ class Server {
     const router = new Router();
 
     // HMR Stuff
-    if (this.config.env === 'development' && this.config.webpack) {
+    if (IS_DEV && this.config.webpack) {
       const middlewareOptions = {
         stats: {
           colors: true,
@@ -91,10 +92,12 @@ class Server {
     }
 
     // compress/gzip
-    app.use(compress({
-      filter: type => !(/event-stream/i.test(type)) && compressible(type),
-      threshold: 2048,
-    }));
+    if (IS_PROD) {
+      app.use(compress({
+        filter: type => !(/event-stream/i.test(type)) && compressible(type),
+        threshold: 2048,
+      }));
+    }
 
     // override koa's undocumented error handler
     app.context.onerror = errorHandler;
@@ -117,9 +120,6 @@ class Server {
     // security
     app.use(helmet());
 
-    // cookie parser
-    app.use(cookie());
-
     // body parser
     app.use(bodyParser());
 
@@ -130,7 +130,7 @@ class Server {
     app.use(async (ctx, next) => {
       try {
         const tm = new Timeout({
-          ms: this.config.timeout,
+          ms: 3000,
           message: 'REQUEST_TIMED_OUT',
         });
 
