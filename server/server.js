@@ -22,6 +22,8 @@ import { devMiddleware, hotMiddleware } from 'koa-webpack-middleware'; // eslint
 import debug from 'debug'; // eslint-disable-line
 import _isFunction from 'lodash/isFunction'; // eslint-disable-line
 
+const log = debug('SERVER');
+
 class Server {
   constructor(config) {
     this.config = Object.assign({
@@ -136,6 +138,7 @@ class Server {
 
         await tm.middleware(ctx, next);
       } catch (err) {
+        log(err);
         ctx.throw(err);
       }
     });
@@ -147,8 +150,6 @@ class Server {
 
         if (ctx.path.indexOf(prefix) === 0) {
           ctx.path = ctx.path.replace(prefix, '') || '/';
-
-          debug('api')('request %s', ctx.path);
 
           return await this.config.api.apply(this, [ctx, next]); // eslint-disable-line
         }
@@ -170,21 +171,25 @@ class Server {
 
   listen(port, fn) {
     this.server = this.server.listen(port, () => {
+      log('listen port %s', port);
+
       if (_isFunction(fn)) {
         fn();
       }
 
-      const message = [
-        `App is running in ${chalk.bold.yellow(this.config.env)} mode\n`,
-        `Open ${chalk.bold.yellow(`http://localhost:${port}`)} in a browser to view the app.\n`,
-        'Build something amazing!',
-      ];
+      if (this.config.env === 'development') {
+        const message = [
+          `App is running in ${chalk.bold.yellow(this.config.env)} mode\n`,
+          `Open ${chalk.bold.yellow(`http://localhost:${port}`)} in a browser to view the app.\n`,
+          'Build something amazing!',
+        ];
 
-      console.info(boxen(chalk.green(message.join('')), {
-        padding: 1,
-        borderColor: 'green',
-        margin: 1,
-      }));
+        console.info(boxen(chalk.green(message.join('')), {
+          padding: 1,
+          borderColor: 'green',
+          margin: 1,
+        }));
+      }
     });
 
     return this.server;
@@ -192,6 +197,8 @@ class Server {
 
   close(fn) {
     this.server.close(fn);
+
+    log('close');
 
     return this;
   }

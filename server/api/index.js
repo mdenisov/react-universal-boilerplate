@@ -1,4 +1,8 @@
+import debug from 'debug';
+
 import services from './services';
+
+const log = debug('API');
 
 function mapPathForService(availableServices = {}, url = []) {
   const notFound = { service: null, params: [] };
@@ -34,6 +38,8 @@ export default async function api(ctx) {
 
   if (service) {
     ctx.params = params;
+
+    log('call %s', urlPath.join(' --> '));
 
     return await service(ctx); // eslint-disable-line
   }
