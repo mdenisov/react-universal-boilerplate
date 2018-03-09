@@ -12,6 +12,7 @@ import bodyParser from 'koa-bodyparser';
 import conditional from 'koa-conditional-get';
 import etag from 'koa-etag';
 import koaLogger from 'koa-logger'; // eslint-disable-line
+import json from 'koa-json'; // eslint-disable-line
 import responseTime from 'koa-response-time'; // eslint-disable-line
 import errorHandler from 'koa-better-error-handler';
 import Timeout from 'koa-better-timeout';
@@ -122,8 +123,11 @@ class Server {
     // body parser
     app.use(bodyParser());
 
+    // pretty-printed json responses
+    app.use(json());
+
     // configure response timeout
-    app.use(async function timeout(ctx, next) {
+    app.use(async (ctx, next) => {
       try {
         const tm = new Timeout({
           ms: this.config.timeout,
@@ -138,7 +142,7 @@ class Server {
 
     // API
     if (this.config.api && _isFunction(this.config.api)) {
-      app.use(async function api(ctx, next) {
+      app.use(async (ctx, next) => {
         const prefix = '/api/';
 
         if (ctx.path.indexOf(prefix) === 0) {
