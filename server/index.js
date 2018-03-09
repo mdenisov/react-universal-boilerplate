@@ -16,7 +16,9 @@ const SSR = require('./SSR').default;
 const assets = require('../public/dist/webpack-assets.json');
 const webpack = require('../tools/webpack/config.dev')[0];
 
-if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'production') {
+const { NODE_ENV } = process.env;
+
+if (NODE_ENV === 'test' || NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
 } else {
   process.env.DEBUG = '*,-babel,-koa-static';
@@ -38,10 +40,11 @@ process.on('uncaughtException', (error) => {
 
 // Create server instance
 const server = new Server({
+  env: NODE_ENV,
   favicon: path.resolve(__dirname, '../public/favicon.ico'),
   static: path.resolve(__dirname, '../public'),
-  api,
   renderer: SSR({ assets }),
+  api,
   webpack,
 });
 

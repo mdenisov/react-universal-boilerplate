@@ -26,13 +26,16 @@ class Server {
   constructor(config) {
     this.config = Object.assign({
       env: 'development',
-      favicon: {},
-      static: {},
-      routes: false,
+      favicon: false,
+      static: false,
       cors: {},
-      timeoutMs: 3000,
+      timeout: 3000,
       webpack: {},
     }, config);
+
+    if (!_isFunction(this.config.renderer)) {
+      throw new Error('renderer was not a function');
+    }
 
     const cacheOptions = {
       gzip: this.config.env !== 'development',
@@ -41,6 +44,9 @@ class Server {
 
     // initialize the app
     const app = new Koa();
+
+    // initialize the app router
+    const router = new Router();
 
     // HMR Stuff
     if (this.config.env === 'development' && this.config.webpack) {
@@ -74,10 +80,14 @@ class Server {
     }
 
     // favicons
-    app.use(favicon(this.config.favicon, cacheOptions));
+    if (this.config.favicon) {
+      app.use(favicon(this.config.favicon, cacheOptions));
+    }
 
     // serve static assets
-    app.use(serve(this.config.static, cacheOptions));
+    if (this.config.static) {
+      app.use(serve(this.config.static, cacheOptions));
+    }
 
     // compress/gzip
     app.use(compress({
@@ -112,11 +122,11 @@ class Server {
     // body parser
     app.use(bodyParser());
 
-    // configure timeout
+    // configure response timeout
     app.use(async (ctx, next) => {
       try {
         const timeout = new Timeout({
-          ms: this.config.timeoutMs,
+          ms: this.config.timeout,
           message: 'REQUEST_TIMED_OUT',
         });
 
@@ -143,25 +153,11 @@ class Server {
       });
     }
 
-    // mount the app's defined and nested routes
-    if (this.config.routes) {
-      if (_isFunction(this.config.routes.routes)) {
-        app.use(this.config.routes.routes());
-        app.use(this.config.routes.allowMethods());
-      } else {
-        app.use(this.config.routes);
-      }
-    }
-
     // Server Side Rendering based on routes matched by React-router.
-    if (this.config.renderer && _isFunction(this.config.renderer)) {
-      // initialize the app router
-      const router = new Router();
-      router.get('*', this.config.renderer);
+    router.get('*', this.config.renderer);
 
-      app.use(router.routes());
-      app.use(router.allowedMethods());
-    }
+    app.use(router.routes());
+    app.use(router.allowedMethods());
 
     // expose app and server
     this.app = app;
@@ -176,7 +172,7 @@ class Server {
 
       const message = [
         `App is running in ${chalk.bold.yellow(this.config.env)} mode\n`,
-        `Open ${chalk.bold.yellow('http://localhost:8000')} in a browser to view the app.\n`,
+        `Open ${chalk.bold.yellow(`http://localhost:${port}`)} in a browser to view the app.\n`,
         'Build something amazing!',
       ];
 
