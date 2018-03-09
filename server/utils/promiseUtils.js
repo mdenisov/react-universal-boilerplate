@@ -1,6 +1,8 @@
 /**
  * Throw an array to it and a function which can generate promises
  * and it will call them sequentially, one after another
+ *
+ * sequence(needs, need => store.dispatch(need(params, store.getState())));
  */
 function sequence(items, consumer) {
   const results = [];
