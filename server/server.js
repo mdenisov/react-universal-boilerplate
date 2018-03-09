@@ -105,10 +105,14 @@ class Server {
     app.context.onerror = errorHandler;
 
     // response time
-    app.use(responseTime());
+    if (IS_DEV) {
+      app.use(responseTime());
+    }
 
     // request logger with custom logger
-    app.use(koaLogger());
+    if (IS_DEV) {
+      app.use(koaLogger());
+    }
 
     // conditional-get
     app.use(conditional());

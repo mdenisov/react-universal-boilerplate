@@ -46,6 +46,7 @@ const render = ({ content, store, assets }) => { // eslint-disable-line
 const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
   const store = configureStore();
   const { url } = ctx.request;
+
   ctx.type = 'html';
 
   try {
