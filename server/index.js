@@ -6,16 +6,6 @@ require('babel-register'); // eslint-disable-line
 
 const path = require('path'); // eslint-disable-line
 
-global.__CLIENT__ = false;
-global.__SERVER__ = true;
-global.__DEV__ = true;
-
-const Server = require('./server');
-const api = require('./api');
-const SSR = require('./SSR').default;
-const assets = require('../public/dist/webpack-assets.json');
-const webpack = require('../tools/webpack/config.dev')[0];
-
 const { NODE_ENV } = process.env;
 
 if (NODE_ENV === 'test' || NODE_ENV === 'production') {
@@ -37,6 +27,15 @@ process.on('uncaughtException', (error) => {
   console.error(`Uncaught Exception: ${error.message}`, error.stack);
 });
 
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+global.__DEV__ = true;
+
+const Server = require('./server');
+const api = require('./api');
+const SSR = require('./SSR').default;
+const assets = require('../public/dist/webpack-assets.json');
+const webpack = require('../tools/webpack/config.dev')[0];
 
 // Create server instance
 const server = new Server({

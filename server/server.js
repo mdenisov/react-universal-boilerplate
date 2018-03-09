@@ -123,14 +123,14 @@ class Server {
     app.use(bodyParser());
 
     // configure response timeout
-    app.use(async (ctx, next) => {
+    app.use(async function timeout(ctx, next) {
       try {
-        const timeout = new Timeout({
+        const tm = new Timeout({
           ms: this.config.timeout,
           message: 'REQUEST_TIMED_OUT',
         });
 
-        await timeout.middleware(ctx, next);
+        await tm.middleware(ctx, next);
       } catch (err) {
         ctx.throw(err);
       }
@@ -138,7 +138,7 @@ class Server {
 
     // API
     if (this.config.api && _isFunction(this.config.api)) {
-      app.use(async (ctx, next) => {
+      app.use(async function api(ctx, next) {
         const prefix = '/api/';
 
         if (ctx.path.indexOf(prefix) === 0) {
