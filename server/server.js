@@ -21,10 +21,7 @@ const helmet = require('koa-helmet');
 
 const webpack = require('webpack'); // eslint-disable-line
 const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
-const debug = require('debug'); // eslint-disable-line
 const _isFunction = require('lodash/isFunction'); // eslint-disable-line
-
-const log = debug('SERVER');
 
 class Server {
   constructor(config) {
@@ -34,6 +31,7 @@ class Server {
       static: false,
       cors: {},
       webpack: {},
+      logger: console,
     }, config);
 
     if (!_isFunction(this.config.renderer)) {
@@ -50,6 +48,9 @@ class Server {
 
     // initialize the app
     const app = new Koa();
+
+    app.on('error', this.config.logger.contextError || this.config.logger.error);
+    app.on('log', this.config.logger.log);
 
     // initialize the app router
     const router = new Router();
@@ -144,7 +145,7 @@ class Server {
 
         await tm.middleware(ctx, next);
       } catch (err) {
-        log(err);
+        this.config.logger.error(err);
         ctx.throw(err);
       }
     });
@@ -177,7 +178,7 @@ class Server {
 
   listen(port, fn) {
     this.server = this.server.listen(port, () => {
-      log('listen port %s', port);
+      this.config.logger.info('listen port %s', port);
 
       if (_isFunction(fn)) {
         fn();
@@ -204,7 +205,7 @@ class Server {
   close(fn) {
     this.server.close(fn);
 
-    log('close');
+    this.config.logger.info('close');
 
     return this;
   }
