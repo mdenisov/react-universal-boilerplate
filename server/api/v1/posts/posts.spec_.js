@@ -1,4 +1,4 @@
-const request = require('supertest');
+const request = require('supertest'); // eslint-disable-line
 const app = require('../../../server');
 
 const inst = app.listen();

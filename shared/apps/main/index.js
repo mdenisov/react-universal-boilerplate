@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; // eslint-disable-line
 import { renderRoutes } from 'react-router-config';
 import { NavLink } from 'react-router-dom';
 import Helmet from 'react-helmet';

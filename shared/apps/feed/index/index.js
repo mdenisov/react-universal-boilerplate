@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; // eslint-disable-line
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'; // eslint-disable-line
 import Helmet from 'react-helmet';
 
 import styles from './error.styles.css';

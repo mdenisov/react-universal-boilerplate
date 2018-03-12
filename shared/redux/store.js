@@ -1,5 +1,5 @@
 import { applyMiddleware, createStore } from 'redux';
-import { createLogger } from 'redux-logger';
+import { createLogger } from 'redux-logger'; // eslint-disable-line
 import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 
