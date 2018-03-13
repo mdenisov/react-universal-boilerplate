@@ -1,5 +1,4 @@
 const { format } = require('util');
-const debug = require('debug'); // eslint-disable-line
 const chalk = require('chalk');
 const _isString = require('lodash/isString');
 const _isPlainObject = require('lodash/isPlainObject');
@@ -56,11 +55,9 @@ class Logger {
     // debugName gets passed to logger.debug
     this.config = Object.assign({
       timestamp: true,
-      appName: 'logger',
       showStack: false,
       silent: false,
-      processName: null,
-      processColor: 'green',
+      processColor: allowedColors.green,
     }, config);
 
     if (
@@ -151,50 +148,19 @@ class Logger {
     // set default level on meta
     meta.level = level; // eslint-disable-line
 
-    // Suppress logs if it was silent
-    if (config.silent) {
-      return;
+    const output = `[${chalk[levels[level]](level.toUpperCase())}] ${message}`;
+    let stack = '';
+
+    // output the stack trace to the console for debugging
+    if (config.showStack && meta.err && meta.err.stack) {
+      stack = JSON.stringify(meta.err.stack);
     }
 
-    if (level === 'debug') {
-      let name = config.processName;
+    console.log(`${config.timestamp ? new Date().toISOString() : ''} ${output} ${stack}`);
 
-      if (!name && require.main && require.main.filename) {
-        name = require.main.filename;
-      }
-
-      if (!name) {
-        name = 'logger';
-      }
-
-      const data = _omit(meta, 'level');
-
-      debug(name)(message, _isEmpty(data) ? '' : data);
-    } else {
-      let prepend = '';
-      if (config.processName) {
-        const color = chalk[config.processColor].bold;
-        prepend = `${color(`[${config.processName}]`)} `;
-      }
-
-      const output = `${prepend}${chalk[levels[level]](level)}: ${message}`;
-
-      console.log(`${config.timestamp ? new Date().toISOString() : ''} ${output}`);
-
-      // if there was meta information then output it
-      if (!_isEmpty(_omit(meta, ['level', 'err']))) {
-        console.log(_omit(meta, ['level', 'err']));
-      }
-
-      // if we're not showing the stack trace then return early
-      if (!config.showStack) {
-        return;
-      }
-
-      // output the stack trace to the console for debugging
-      if (meta.err && meta.err.stack) {
-        console.log(meta.err.stack);
-      }
+    // if there was meta information then output it
+    if (!_isEmpty(_omit(meta, ['level', 'err']))) {
+      console.log(_omit(meta, ['level', 'err']));
     }
   }
 }
