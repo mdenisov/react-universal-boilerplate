@@ -10,14 +10,13 @@ const Server = require('./server');
 const api = require('./api');
 const SSR = require('./SSR').default;
 const Logger = require('./utils/logger');
-const config = require('./config');
 const assets = require('../public/dist/webpack-assets.json');
 const webpack = require('../tools/webpack/config.dev')[0];
 
 const { NODE_ENV } = process.env;
 
 // Create logger instance
-const logger = new Logger(config.logger);
+const logger = Logger.create('SERVER');
 
 if (NODE_ENV === 'test' || NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
