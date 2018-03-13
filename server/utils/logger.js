@@ -11,11 +11,6 @@ const _omit = require('lodash/omit');
 
 const { env } = require('../config');
 
-// `debug` (the least serious)
-// `info`
-// `warning` (also aliased as `warn`)
-// `error` (also aliased as `err`)
-// `fatal` (the most serious)
 const levels = {
   debug: 'bgCyan',
   info: 'bgGreen',
@@ -43,15 +38,13 @@ const allowedColors = [
   'whiteBright',
 ];
 
-// these are known as "placeholder tokens", see this link for more info:
-// <https://nodejs.org/api/util.html#util_util_format_format_args>
-//
-// since they aren't exposed (or don't seem to be) by node (at least not yet)
-// we just define an array that contains them for now
-// <https://github.com/nodejs/node/issues/17601>
 const tokens = ['%s', '%d', '%i', '%f', '%j', '%o', '%O', '%%'];
 
 class Logger {
+  static createLogger(namespace) {
+    return new Logger({ namespace });
+  }
+
   constructor(config = {}) {
     this.config = Object.assign({
       timestamp: true,
@@ -170,9 +163,5 @@ class Logger {
 }
 
 Logger.levels = Object.keys(levels);
-
-Logger.createLogger = (namespace) => {
-  return new Logger({ namespace });
-};
 
 module.exports = Logger;
