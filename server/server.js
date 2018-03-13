@@ -49,7 +49,7 @@ class Server {
     // initialize the app
     const app = new Koa();
 
-    app.on('error', this.config.logger.contextError || this.config.logger.error);
+    app.on('error', this.config.logger.error);
     app.on('log', this.config.logger.log);
 
     // initialize the app router

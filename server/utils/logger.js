@@ -9,6 +9,8 @@ const _isError = require('lodash/isError');
 const _isEmpty = require('lodash/isEmpty');
 const _omit = require('lodash/omit');
 
+const { env } = require('../config');
+
 // `debug` (the least serious)
 // `info`
 // `warning` (also aliased as `warn`)
@@ -22,26 +24,6 @@ const levels = {
   fatal: 'bgRed',
 };
 
-const allowedColors = [
-  'green',
-  'bgBlack',
-  'bgRed',
-  'bgGreen',
-  'bgYellow',
-  'bgBlue',
-  'bgMagenta',
-  'bgCyan',
-  'bgWhite',
-  'bgBlackBright',
-  'bgRedBright',
-  'bgGreenBright',
-  'bgYellowBright',
-  'bgBlueBright',
-  'bgMagentaBright',
-  'bgCyanBright',
-  'bgWhiteBright',
-];
-
 // these are known as "placeholder tokens", see this link for more info:
 // <https://nodejs.org/api/util.html#util_util_format_format_args>
 //
@@ -52,23 +34,12 @@ const tokens = ['%s', '%d', '%i', '%f', '%j', '%o', '%O', '%%'];
 
 class Logger {
   constructor(config = {}) {
-    // debugName gets passed to logger.debug
     this.config = Object.assign({
       timestamp: true,
       showStack: false,
-      silent: false,
-      processColor: allowedColors.green,
     }, config);
 
-    if (
-      this.config.processColor &&
-      !allowedColors.includes(this.config.processColor)
-    ) {
-      throw new Error(`Invalid color ${this.config.processColor}, must be one of ${allowedColors.join(', ')}`);
-    }
-
     // bind helper functions for each log level
-
     Object.keys(levels).forEach((level) => {
       this[level] = (...args) => {
         this.log(level, ...args);
@@ -78,10 +49,6 @@ class Logger {
     // aliases
     this.err = this.error;
     this.warn = this.warning;
-  }
-
-  contextError(err) {
-    this.error(err);
   }
 
   log(level, message, meta = {}) {
@@ -148,15 +115,16 @@ class Logger {
     // set default level on meta
     meta.level = level; // eslint-disable-line
 
-    const output = `[${chalk[levels[level]](level.toUpperCase())}] ${message}`;
-    let stack = '';
+    const output = env === 'development'
+      ? `${chalk[levels[level]](`[${level.toUpperCase()}]`)} ${message}`
+      : `[${level.toUpperCase()}] ${message}`;
+
+    console.log(`${config.timestamp ? new Date().toISOString() : ''} ${output}`);
 
     // output the stack trace to the console for debugging
     if (config.showStack && meta.err && meta.err.stack) {
-      stack = JSON.stringify(meta.err.stack);
+      console.log(meta.err.stack);
     }
-
-    console.log(`${config.timestamp ? new Date().toISOString() : ''} ${output} ${stack}`);
 
     // if there was meta information then output it
     if (!_isEmpty(_omit(meta, ['level', 'err']))) {
