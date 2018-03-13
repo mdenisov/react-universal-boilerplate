@@ -1,7 +1,7 @@
 import { matchRoutes } from 'react-router-config';
 
 // The method for loading data from server-side
-const fetchData = ({ routes, store, url }) => {
+const prefetch = ({ routes, store, url }) => {
   const matches = matchRoutes(routes, url);
 
   const promises = matches.map(({ route, match }) => {
@@ -17,4 +17,4 @@ const fetchData = ({ routes, store, url }) => {
   return Promise.all(promises);
 };
 
-export default fetchData;
+export default prefetch;

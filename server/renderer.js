@@ -9,7 +9,7 @@ import debug from 'debug'; // eslint-disable-line
 
 import routes from '../shared/routes';
 import configureStore from '../shared/redux/store';
-import fetchData from '../server/utils/fetchData';
+import prefetch from '../server/utils/prefetch';
 import assetsUtil from '../server/utils/assets';
 
 const log = debug('SSR');
@@ -51,7 +51,7 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
 
   try {
     // Load data from server-side first
-    await fetchData({ routes, store, url });
+    await prefetch({ routes, store, url });
 
     const staticContext = {};
     const content = (
