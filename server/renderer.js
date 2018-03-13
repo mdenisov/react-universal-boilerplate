@@ -53,6 +53,7 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
     // Load data from server-side first
     await prefetch({ routes, store, url });
 
+    const doctype = '<!doctype html>';
     const staticContext = {};
     const content = (
       <Provider store={store}>
@@ -61,7 +62,8 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
         </StaticRouter>
       </Provider>
     );
-    const html = ReactDOMServer.renderToString(render({ content, assets, store }));
+    // const html = render({ content, assets, store });
+    const html = `${doctype}${ReactDOMServer.renderToString(render({ content, assets, store }))}`;
 
     // Check if the render result contains a redirect, if so we need to set
     // the specific status and redirect header and end the response

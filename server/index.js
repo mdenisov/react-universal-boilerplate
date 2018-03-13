@@ -29,7 +29,7 @@ process.on('uncaughtException', (error) => {
 
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
-global.__DEV__ = true;
+global.__DEV__ = NODE_ENV === 'development';
 
 const Server = require('./server');
 const api = require('./api');
