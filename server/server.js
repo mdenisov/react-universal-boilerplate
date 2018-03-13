@@ -28,7 +28,7 @@ class Server {
     this.config = Object.assign({
       env: 'development',
       favicon: false,
-      static: false,
+      public: false,
       cors: {},
       webpack: {},
       logger: console,
@@ -92,8 +92,8 @@ class Server {
     }
 
     // serve static assets
-    if (this.config.static) {
-      app.use(serve(this.config.static, cacheOptions));
+    if (this.config.public) {
+      app.use(serve(this.config.public, cacheOptions));
     }
 
     // compress/gzip

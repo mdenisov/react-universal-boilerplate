@@ -46,7 +46,7 @@ const logger = new Logger(config.logger);
 const server = new Server({
   env: NODE_ENV,
   favicon: path.resolve(__dirname, '../public/favicon.ico'),
-  static: path.resolve(__dirname, '../public'),
+  public: path.resolve(__dirname, '../public'),
   renderer: SSR({ assets }),
   api,
   webpack,
