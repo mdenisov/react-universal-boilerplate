@@ -17,12 +17,31 @@ const { env } = require('../config');
 // `error` (also aliased as `err`)
 // `fatal` (the most serious)
 const levels = {
-  debug: 'cyan',
-  info: 'green',
-  warning: 'yellow',
-  error: 'red',
+  debug: 'bgCyan',
+  info: 'bgGreen',
+  warning: 'bgYellow',
+  error: 'bgRed',
   fatal: 'bgRed',
 };
+
+const allowedColors = [
+  'black',
+  'red',
+  'green',
+  'yellow',
+  'blue',
+  'magenta',
+  'cyan',
+  'white',
+  'blackBright',
+  'redBright',
+  'greenBright',
+  'yellowBright',
+  'blueBright',
+  'magentaBright',
+  'cyanBright',
+  'whiteBright',
+];
 
 // these are known as "placeholder tokens", see this link for more info:
 // <https://nodejs.org/api/util.html#util_util_format_format_args>
@@ -37,7 +56,13 @@ class Logger {
     this.config = Object.assign({
       timestamp: true,
       showStack: false,
+      namespace: '',
+      namespaceColor: 'cyan',
     }, config);
+
+    if (this.config.namespaceColor && !allowedColors.includes(this.config.namespaceColor)) {
+      throw new Error(`Invalid color ${this.config.namespaceColor}, must be one of ${allowedColors.join(', ')}`);
+    }
 
     // bind helper functions for each log level
     Object.keys(levels).forEach((level) => {
@@ -115,15 +140,26 @@ class Logger {
     // set default level on meta
     meta.level = level; // eslint-disable-line
 
+    let namespace = '';
+
+    if (config.namespace) {
+      const color = chalk[config.namespaceColor].bold;
+      namespace = env === 'development'
+        ? ` ${color(`${config.namespace}`)}`
+        : ` ${config.namespace}`;
+    }
+
+    // chalk[bgColor(severity)].black('', message, '');
+
     const output = env === 'development'
-      ? `${chalk[levels[level]](`[${level.toUpperCase()}]`)} ${message}`
-      : `[${level.toUpperCase()}] ${message}`;
+      ? `${chalk[levels[level]].black('', level.toUpperCase(), '')}${namespace} ${message}`
+      : ` ${level.toUpperCase()}${namespace} ${message}`;
 
     console.log(`${config.timestamp ? new Date().toISOString() : ''} ${output}`);
 
     // output the stack trace to the console for debugging
     if (config.showStack && meta.err && meta.err.stack) {
-      console.log(meta.err.stack);
+      console.log(JSON.stringify(meta.err.stack));
     }
 
     // if there was meta information then output it
@@ -134,5 +170,9 @@ class Logger {
 }
 
 Logger.levels = Object.keys(levels);
+
+Logger.createLogger = (namespace) => {
+  return new Logger({ namespace });
+};
 
 module.exports = Logger;

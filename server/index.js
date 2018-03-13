@@ -6,7 +6,18 @@ require('babel-register'); // eslint-disable-line
 
 const path = require('path'); // eslint-disable-line
 
+const Server = require('./server');
+const api = require('./api');
+const SSR = require('./SSR').default;
+const Logger = require('./utils/logger');
+const config = require('./config');
+const assets = require('../public/dist/webpack-assets.json');
+const webpack = require('../tools/webpack/config.dev')[0];
+
 const { NODE_ENV } = process.env;
+
+// Create logger instance
+const logger = new Logger(config.logger);
 
 if (NODE_ENV === 'test' || NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
@@ -17,30 +28,19 @@ if (NODE_ENV === 'test' || NODE_ENV === 'production') {
 
 process.on('unhandledRejection', (reason, p) => {
   if (reason.stack) {
-    console.error(reason.stack);
+    logger.error(JSON.stringify(reason.stack));
   } else {
-    console.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
+    logger.error('Unhandled Rejection at: Promise ', p, ' reason: ', reason);
   }
 });
 
 process.on('uncaughtException', (error) => {
-  console.error(`Uncaught Exception: ${error.message}`, error.stack);
+  logger.error(`Uncaught Exception: ${error.message}`, JSON.stringify(error.stack));
 });
 
 global.__CLIENT__ = false;
 global.__SERVER__ = true;
 global.__DEV__ = NODE_ENV === 'development';
-
-const Server = require('./server');
-const api = require('./api');
-const SSR = require('./SSR').default;
-const Logger = require('./utils/logger');
-const config = require('./config');
-const assets = require('../public/dist/webpack-assets.json');
-const webpack = require('../tools/webpack/config.dev')[0];
-
-// Create logger instance
-const logger = new Logger(config.logger);
 
 // Create server instance
 const server = new Server({

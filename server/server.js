@@ -182,7 +182,11 @@ class Server {
 
   listen(port, fn) {
     this.server = this.server.listen(port, () => {
+      this.config.logger.debug('listen port %s', port);
       this.config.logger.info('listen port %s', port);
+      this.config.logger.warn('listen port %s', port);
+      this.config.logger.error('listen port %s', port);
+      this.config.logger.fatal('listen port %s', port);
 
       if (_isFunction(fn)) {
         fn();
