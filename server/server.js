@@ -173,10 +173,6 @@ class Server {
 
     // Server Side Rendering based on routes matched by React-router.
     router.get('*', this.config.renderer);
-    // router.get('*', (ctx) => {
-    //   ctx.type = 'html';
-    //   ctx.body = '123456';
-    // });
 
     app.use(router.routes());
     app.use(router.allowedMethods());
