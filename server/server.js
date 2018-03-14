@@ -18,6 +18,7 @@ const errorHandler = require('koa-better-error-handler');
 const Timeout = require('koa-better-timeout');
 const compressible = require('compressible');
 const helmet = require('koa-helmet');
+const compose = require('koa-compose');
 
 const webpack = require('webpack'); // eslint-disable-line
 const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
@@ -32,6 +33,7 @@ class Server {
       cors: {},
       webpack: {},
       logger: console,
+      middlewares: false,
     }, config);
 
     if (!_isFunction(this.config.renderer)) {
@@ -134,6 +136,10 @@ class Server {
 
     // pretty-printed json responses
     app.use(json());
+
+    if (Array.isArray(this.config.middlewares)) {
+      app.use(compose(this.config.middlewares));
+    }
 
     // configure response timeout
     app.use(async (ctx, next) => {
