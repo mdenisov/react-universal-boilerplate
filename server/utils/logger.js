@@ -1,5 +1,6 @@
 const { format } = require('util');
 const chalk = require('chalk');
+const colorConvert = require('color-convert'); // eslint-disable-line
 const _isString = require('lodash/isString');
 const _isPlainObject = require('lodash/isPlainObject');
 const _isObject = require('lodash/isObject');
@@ -144,11 +145,7 @@ class Logger {
 
     if (config.namespace) {
       const color = this.selectColor();
-      const colored = `\u001b[3${(color < 8 ? color : `8;5;${color}`)};1m${config.namespace}\u001b[0m`;
-
-      // const col = `38,5,${color}`.split(',');
-
-      // console.log(chalk.rgb(color, 0, 0)(config.namespace));
+      const colored = chalk.bold.rgb(...colorConvert.ansi256.rgb(color))(config.namespace);
 
       namespace = env === 'development'
         ? ` ${colored}`
