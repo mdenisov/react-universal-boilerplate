@@ -20,25 +20,6 @@ const levels = {
   fatal: 'bgRed',
 };
 
-const allowedColors = [
-  'black',
-  'red',
-  'green',
-  'yellow',
-  'blue',
-  'magenta',
-  'cyan',
-  'white',
-  'blackBright',
-  'redBright',
-  'greenBright',
-  'yellowBright',
-  'blueBright',
-  'magentaBright',
-  'cyanBright',
-  'whiteBright',
-];
-
 const tokens = ['%s', '%d', '%i', '%f', '%j', '%o', '%O', '%%'];
 
 const colors = [
@@ -60,10 +41,6 @@ class Logger {
       showStack: false,
       namespace: '',
     }, config);
-
-    if (this.config.namespaceColor && !allowedColors.includes(this.config.namespaceColor)) {
-      throw new Error(`Invalid color ${this.config.namespaceColor}, must be one of ${allowedColors.join(', ')}`);
-    }
 
     // bind helper functions for each log level
     Object.keys(levels).forEach((level) => {
