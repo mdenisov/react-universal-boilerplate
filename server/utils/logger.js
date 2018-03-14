@@ -143,7 +143,7 @@ class Logger {
 
     // if there was meta information then output it
     if (!_isEmpty(_omit(meta, ['level', 'err']))) {
-      console.log(_omit(meta, ['level', 'err']));
+      console.log(JSON.stringify(_omit(meta, ['level', 'err'])));
     }
   }
 
