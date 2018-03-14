@@ -12,6 +12,11 @@ const _omit = require('lodash/omit');
 
 const { env } = require('../config');
 
+// `debug` (the least serious)
+// `info`
+// `warning` (also aliased as `warn`)
+// `error` (also aliased as `err`)
+// `fatal` (the most serious)
 const levels = {
   debug: 'bgCyan',
   info: 'bgGreen',
@@ -31,11 +36,20 @@ const colors = [
 ];
 
 class Logger {
+  /**
+   * Fabric method
+   * @param namespace
+   * @returns {Logger}
+   */
   static create(namespace) {
     return new Logger({ namespace });
   }
 
-  // get ansi color for namespace
+  /**
+   * Get ansi color for namespace
+   * @param text
+   * @returns {*}
+   */
   static getRGBColor(text) {
     let hash = 0;
 
@@ -69,6 +83,12 @@ class Logger {
     this.warn = this.warning;
   }
 
+  /**
+   * Main logging method
+   * @param level
+   * @param message
+   * @param meta
+   */
   log(level, message, meta = {}) {
     const { config } = this;
     let modifier = 0;
