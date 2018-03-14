@@ -31,7 +31,7 @@ class Server {
       favicon: false,
       public: false,
       cors: {},
-      webpack: {},
+      webpack: false,
       logger: console,
       middlewares: false,
     }, config);
