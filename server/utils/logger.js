@@ -35,6 +35,21 @@ class Logger {
     return new Logger({ namespace });
   }
 
+  // get ansi color for namespace
+  static getRGBColor(text) {
+    let hash = 0;
+
+    [...text].forEach((i) => {
+      hash = ((hash << 5) - hash) + text.charCodeAt(i); // eslint-disable-line
+      // Convert to 32bit integer
+      hash |= 0; // eslint-disable-line
+    });
+
+    const code = colors[Math.abs(hash) % colors.length];
+
+    return colorConvert.ansi256.rgb(code);
+  }
+
   constructor(config = {}) {
     this.config = Object.assign({
       timestamp: false,
@@ -121,8 +136,8 @@ class Logger {
     let namespace = '';
 
     if (config.namespace) {
-      const color = this.selectColor();
-      const colored = chalk.bold.rgb(...colorConvert.ansi256.rgb(color))(config.namespace);
+      const rgb = this.constructor.getRGBColor(config.namespace);
+      const colored = chalk.bold.rgb(...rgb)(config.namespace);
 
       namespace = env === 'development'
         ? `${colored} `
@@ -145,19 +160,6 @@ class Logger {
     if (!_isEmpty(_omit(meta, ['level', 'err']))) {
       console.log(JSON.stringify(_omit(meta, ['level', 'err'])));
     }
-  }
-
-  selectColor() {
-    const { namespace } = this.config;
-    let hash = 0;
-
-    [...namespace].forEach((i) => {
-      hash = ((hash << 5) - hash) + namespace.charCodeAt(i); // eslint-disable-line
-      // Convert to 32bit integer
-      hash |= 0; // eslint-disable-line
-    });
-
-    return colors[Math.abs(hash) % colors.length];
   }
 }
 
