@@ -125,15 +125,16 @@ class Logger {
       const colored = chalk.bold.rgb(...colorConvert.ansi256.rgb(color))(config.namespace);
 
       namespace = env === 'development'
-        ? ` ${colored}`
-        : ` ${config.namespace}`;
+        ? `${colored} `
+        : `${config.namespace} `;
     }
 
+    const date = config.timestamp ? `${new Date().toISOString()} ` : '';
     const output = env === 'development'
-      ? `${chalk[levels[level]].black('', level.toUpperCase(), '')}${namespace} ${message}`
-      : `${level.toUpperCase()}${namespace} ${message}`;
+      ? `${chalk[levels[level]].black('', level.toUpperCase(), '')} ${namespace}${message}`
+      : `${level.toUpperCase()} ${namespace}${message}`;
 
-    console.log(`${config.timestamp ? new Date().toISOString() : ''} ${output}`);
+    console.log(`${date}${output}`);
 
     // output the stack trace to the console for debugging
     if (config.showStack && meta.err && meta.err.stack) {
