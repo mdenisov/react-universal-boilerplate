@@ -1,7 +1,9 @@
 const http = require('http');
 const boxen = require('boxen');
 const chalk = require('chalk');
+const _isFunction = require('lodash/isFunction'); // eslint-disable-line
 
+// koa stuff
 const Koa = require('koa');
 const serve = require('koa-static');
 const favicon = require('koa-favicon');
@@ -15,14 +17,14 @@ const logger = require('koa-logger'); // eslint-disable-line
 const json = require('koa-json'); // eslint-disable-line
 const responseTime = require('koa-response-time'); // eslint-disable-line
 const errorHandler = require('koa-better-error-handler');
-const Timeout = require('koa-better-timeout');
 const compressible = require('compressible');
 const helmet = require('koa-helmet');
 const compose = require('koa-compose');
 
-const webpack = require('webpack'); // eslint-disable-line
-const { devMiddleware, hotMiddleware } = require('koa-webpack-middleware'); // eslint-disable-line
-const _isFunction = require('lodash/isFunction'); // eslint-disable-line
+// middlewares
+const timeout = require('./middleware/timeout');
+const hmr = require('./middleware/hmr');
+const api = require('./middleware/api');
 
 class Server {
   constructor(config) {
@@ -59,33 +61,10 @@ class Server {
 
     // HMR Stuff
     if (IS_DEV && this.config.webpack) {
-      const middlewareOptions = {
-        stats: {
-          colors: true,
-          hash: false,
-          children: false,
-          reasons: false,
-          chunks: false,
-          modules: false,
-          warnings: false,
-          timings: false,
-          version: false,
-        },
-        hot: true,
-        quiet: false,
-        noInfo: false,
-        lazy: false,
-        headers: {
-          'Access-Control-Allow-Origin': 'http://localhost',
-        },
-        publicPath: this.config.webpack.output.publicPath,
-      };
-      const compiler = webpack(this.config.webpack);
+      const hmrm = hmr({ config: this.config.webpack });
 
-      app.use(devMiddleware(compiler, middlewareOptions));
-      app.use(hotMiddleware(compiler, {
-        log: false,
-      }));
+      app.use(hmrm.dev);
+      app.use(hmrm.hot);
     }
 
     // favicon
@@ -142,33 +121,11 @@ class Server {
     }
 
     // configure response timeout
-    app.use(async (ctx, next) => {
-      try {
-        const tm = new Timeout({
-          ms: 3000,
-          message: 'REQUEST_TIMED_OUT',
-        });
-
-        await tm.middleware(ctx, next);
-      } catch (err) {
-        this.config.logger.error(err);
-        ctx.throw(err);
-      }
-    });
+    app.use(timeout({ logger: this.config.logger }));
 
     // API
     if (this.config.api && _isFunction(this.config.api)) {
-      app.use(async (ctx, next) => {
-        const prefix = '/api/';
-
-        if (ctx.path.indexOf(prefix) === 0) {
-          ctx.path = ctx.path.replace(prefix, '') || '/';
-
-          return await this.config.api.apply(this, [ctx, next]); // eslint-disable-line
-        }
-
-        await next();
-      });
+      app.use(api({ prefix: '/api/', app: this.config.api }));
     }
 
     // Server Side Rendering based on routes matched by React-router.

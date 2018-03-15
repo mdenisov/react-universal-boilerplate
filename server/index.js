@@ -6,6 +6,14 @@ require('babel-register'); // eslint-disable-line
 
 const path = require('path'); // eslint-disable-line
 
+const { NODE_ENV } = process.env;
+
+if (NODE_ENV === 'test' || NODE_ENV === 'production') {
+  process.env.DEBUG = '-*';
+} else {
+  process.env.DEBUG = '*,-babel,-koa-static';
+}
+
 const Server = require('./server');
 const api = require('./api');
 const SSR = require('./SSR').default;
@@ -13,16 +21,8 @@ const Logger = require('./utils/logger');
 const assets = require('../public/dist/webpack-assets.json');
 const webpack = require('../tools/webpack/config.dev')[0];
 
-const { NODE_ENV } = process.env;
-
 // Create logger instance
 const logger = Logger.create('SERVER');
-
-if (NODE_ENV === 'test' || NODE_ENV === 'production') {
-  process.env.DEBUG = '-*';
-} else {
-  process.env.DEBUG = '*,-babel,-koa-static';
-}
 
 
 process.on('unhandledRejection', (reason, p) => {
