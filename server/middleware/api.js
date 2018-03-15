@@ -1,7 +1,7 @@
-function api(options) {
+function apiMiddleware(options) {
   const { prefix = '/api/', app = () => {} } = options;
 
-  return async function (ctx, next) {
+  return async function api(ctx, next) {
     if (ctx.path.indexOf(prefix) === 0) {
       ctx.path = ctx.path.replace(prefix, '') || '/';
 
@@ -12,4 +12,4 @@ function api(options) {
   };
 }
 
-export default api;
+export default apiMiddleware;
