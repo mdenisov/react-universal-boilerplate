@@ -47,8 +47,10 @@ async function api(ctx) {
       ctx.status = 200;
       ctx.body = result;
     } catch (e) {
-      ctx.status = e.statusCode || e.status || 500;
-      ctx.body = { message: e.message };
+      const { statusCode, payload } = e.output;
+
+      ctx.status = statusCode || 500;
+      ctx.body = payload || { message: 'Internal Error' };
     }
   } else {
     ctx.status = 404;

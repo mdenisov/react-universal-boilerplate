@@ -21,10 +21,6 @@ function ApiClient(endpoint, method = 'post', body) {
 
       return json;
     });
-  // .then(
-  //   response => response,
-  //   error => error,
-  // );
 }
 
 export default ApiClient;

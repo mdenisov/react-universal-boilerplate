@@ -120,7 +120,7 @@ export function deletePost(slug) {
 
     return ApiClient('/v1/posts/remove', 'post', {
       slug,
-    });
+    }).catch(err => console.log(err));
   };
 }
 
@@ -142,7 +142,9 @@ export function createPost(title, content) {
         content,
         name,
       },
-    }).then(res => dispatch(addPost(res)));
+    })
+      .then(res => dispatch(addPost(res)))
+      .catch(err => console.log(err));
   };
 }
 

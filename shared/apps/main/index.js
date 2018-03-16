@@ -7,6 +7,12 @@ import Helmet from 'react-helmet';
 import styles from './app.styles.css';
 
 class Main extends PureComponent {
+  componentDidUpdate(prevProps) {
+    if (this.props.location !== prevProps.location) {
+      window.scrollTo(0, 0);
+    }
+  }
+
   renderNavigation() {
     return (
       <div className={styles['menu-wrapper']}>
@@ -64,6 +70,12 @@ Main.navigation = [
 ];
 
 Main.propTypes = {
+  location: PropTypes.shape({
+    hash: PropTypes.string,
+    key: PropTypes.string,
+    pathname: PropTypes.string,
+    search: PropTypes.string,
+  }).isRequired,
   route: PropTypes.shape({
     routes: PropTypes.array,
   }).isRequired,
