@@ -121,7 +121,7 @@ class Server {
     }
 
     // configure response timeout
-    app.use(timeout({ logger: this.config.logger }));
+    app.use(timeout());
 
     // API
     if (this.config.api && _isFunction(this.config.api)) {
