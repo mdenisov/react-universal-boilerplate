@@ -27,9 +27,7 @@ async function list(ctx) {
     ctx.body = posts.sort((a, b) => b.id - a.id);
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
-    ctx.body = {
-      message: e.message,
-    };
+    ctx.body = { message: e.message };
   }
 }
 
@@ -46,21 +44,20 @@ async function create(ctx) {
       !ctx.request.body.post.content
     ) {
       ctx.status = 403;
+      ctx.body = { message: '' };
+    } else {
+      const id = posts.slice(-1)[0].id + 1;
+      const saved = {
+        ...ctx.request.body.post,
+        slug: `${ctx.request.body.post.title}-${id}`,
+        id,
+      };
 
-      return;
+      posts.push(saved);
+
+      ctx.status = 201;
+      ctx.body = saved;
     }
-
-    const id = posts.slice(-1)[0].id + 1;
-    const saved = {
-      ...ctx.request.body.post,
-      slug: `${ctx.request.body.post.title}-${id}`,
-      id,
-    };
-
-    posts.push(saved);
-
-    ctx.status = 201;
-    ctx.body = saved;
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
     ctx.body = {
@@ -84,15 +81,11 @@ async function get(ctx) {
       ctx.body = post;
     } else {
       ctx.status = 404;
-      ctx.body = {
-        message: 'That post does not exist.',
-      };
+      ctx.body = { message: 'That post does not exist.' };
     }
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
-    ctx.body = {
-      message: e.message,
-    };
+    ctx.body = { message: e.message };
   }
 }
 
@@ -106,19 +99,16 @@ async function remove(ctx) {
     const { slug } = ctx.request.body;
     const post = posts.find(item => item.slug === slug);
 
-    if (!post) {
+    if (post) {
+      ctx.status = 200;
+      ctx.body = {};
+    } else {
       ctx.status = 404;
-      ctx.body = 'That post does not exist.';
-
-      return;
+      ctx.body = { message: 'That post does not exist.' };
     }
-
-    ctx.status = 200;
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
-    ctx.body = {
-      message: e.message,
-    };
+    ctx.body = { message: e.message };
   }
 }
 

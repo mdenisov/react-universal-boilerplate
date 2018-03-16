@@ -126,15 +126,15 @@ export function deletePost(slug) {
 
 // Create a Post
 
-function addPost(post) {
-  return { type: POST_ADD, post };
+function addPost(data) {
+  return { type: POST_ADD, data };
 }
 
 export function createPost(title, content) {
   return (dispatch) => {
     const name = 'Admin';
 
-    return ApiClient('/v1/posts/get', 'post', {
+    return ApiClient('/v1/posts/create', 'post', {
       post: {
         title,
         content,
@@ -240,7 +240,10 @@ export default function reducer(state = defaultState, action) {
     case POST_REMOVE: {
       newState = {
         ...state,
-        posts: state.posts.filter(post => post.slug !== action.slug),
+        posts: {
+          ...state.posts,
+          data: state.posts.data.filter(post => post.slug !== action.slug),
+        },
       };
 
       break;
@@ -249,7 +252,10 @@ export default function reducer(state = defaultState, action) {
     case POST_ADD: {
       newState = {
         ...state,
-        posts: [action.post, ...state.posts],
+        posts: {
+          ...state.posts,
+          data: [action.data, ...state.posts.data],
+        },
       };
 
       break;
