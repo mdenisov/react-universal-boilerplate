@@ -1,5 +1,6 @@
 .DS_Store
 npm-debug.log
+.cache/
 .idea/
 .vscode/
 node_modules/

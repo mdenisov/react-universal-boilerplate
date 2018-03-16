@@ -50,6 +50,7 @@ const client = {
         use: {
           loader: 'babel-loader',
           options: {
+            cacheDirectory: '.cache',
             presets: ['env', 'react'],
             plugins: [['react-transform', {
               transforms: [{
@@ -154,6 +155,7 @@ const server = {
         use: {
           loader: 'babel-loader',
           options: {
+            cacheDirectory: '.cache',
             presets: ['env', 'react'],
             plugins: [
               ['css-modules-transform', {
