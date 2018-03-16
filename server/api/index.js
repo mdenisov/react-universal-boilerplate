@@ -39,7 +39,7 @@ export default async function api(ctx) {
   if (service) {
     ctx.params = params;
 
-    log('call %s', urlPath.join(' --> '));
+    log(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
 
     return await service(ctx); // eslint-disable-line
   }

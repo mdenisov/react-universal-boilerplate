@@ -26,8 +26,10 @@ async function list(ctx) {
     ctx.status = 200;
     ctx.body = { posts: posts.sort((a, b) => b.id - a.id) };
   } catch (e) {
-    ctx.status = 500;
-    ctx.body = e;
+    ctx.status = e.statusCode || e.status || 500;
+    ctx.body = {
+      message: e.message,
+    };
   }
 }
 
@@ -60,8 +62,10 @@ async function create(ctx) {
     ctx.status = 201;
     ctx.body = { post: saved };
   } catch (e) {
-    ctx.status = 500;
-    ctx.body = e;
+    ctx.status = e.statusCode || e.status || 500;
+    ctx.body = {
+      message: e.message,
+    };
   }
 }
 
@@ -77,15 +81,19 @@ async function get(ctx) {
 
     if (!post) {
       ctx.status = 404;
-
+      ctx.body = {
+        message: 'That post does not exist.',
+      };
       return;
     }
 
     ctx.status = 200;
     ctx.body = { post };
   } catch (e) {
-    ctx.status = 500;
-    ctx.body = e;
+    ctx.status = e.statusCode || e.status || 500;
+    ctx.body = {
+      message: e.message,
+    };
   }
 }
 
@@ -101,14 +109,17 @@ async function remove(ctx) {
 
     if (!post) {
       ctx.status = 404;
+      ctx.body = 'That post does not exist.';
 
       return;
     }
 
     ctx.status = 200;
   } catch (e) {
-    ctx.status = 500;
-    ctx.body = e;
+    ctx.status = e.statusCode || e.status || 500;
+    ctx.body = {
+      message: e.message,
+    };
   }
 }
 

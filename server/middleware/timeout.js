@@ -1,12 +1,12 @@
 import Timeout from 'koa-better-timeout';
 
-function timeout(options) {
-  const { logger } = options;
+function timeoutMiddleware(options) {
+  const { ms = 3000, logger } = options;
 
-  return async function (ctx, next) {
+  return async function timeout(ctx, next) {
     try {
       const tm = new Timeout({
-        ms: 3000,
+        ms,
         message: 'REQUEST_TIMED_OUT',
       });
 
@@ -21,4 +21,4 @@ function timeout(options) {
   };
 }
 
-export default timeout;
+export default timeoutMiddleware;
