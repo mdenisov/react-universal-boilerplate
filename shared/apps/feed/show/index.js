@@ -23,16 +23,22 @@ class PostView extends PureComponent {
     this.props.dispatch(actions.deletePost(slug));
   }
 
-  content() {
+  renderError() { // eslint-disable-line
     return (
-      this.props.feed.isLoading
+      <div className={styles.loading}>{this.props.post.error}</div>
+    );
+  }
+
+  renderContent() {
+    return (
+      this.props.post.loading
         ? (
           <div className={styles.loading}>Loading Post</div>
         )
         : (
           <Post
-            key={this.props.feed.currentPost.id}
-            {...this.props.feed.currentPost}
+            key={this.props.post.data.id}
+            {...this.props.post.data}
             onDelete={this.handleDeletePost}
           />
         )
@@ -43,25 +49,28 @@ class PostView extends PureComponent {
     return (
       <div className={styles.wrapper}>
         <Helmet
-          title={this.props.feed.currentPost.title || 'Blog'}
+          title={this.props.post.data.title || 'Blog'}
         />
-        {this.content()}
+        {
+          this.props.post.error
+            ? this.renderError()
+            : this.renderContent()
+        }
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  feed: state.post,
+  post: state.post.post,
 });
 
 PostView.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  feed: PropTypes.shape({
-    currentPost: PropTypes.object,
-    posts: PropTypes.array,
-    isLoading: PropTypes.bool,
-    isError: PropTypes.bool,
+  post: PropTypes.shape({
+    loading: PropTypes.bool,
+    error: PropTypes.string,
+    data: PropTypes.object,
   }).isRequired,
   match: PropTypes.shape({
     params: PropTypes.object,

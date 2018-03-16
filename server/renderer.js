@@ -12,8 +12,6 @@ import configureStore from '../shared/redux/store';
 import prefetch from '../server/utils/prefetch';
 import assetsUtil from '../server/utils/assets';
 
-const log = debug('SSR');
-
 const render = ({ content, store, assets }) => { // eslint-disable-line
   const helmet = Helmet.rewind();
   const resources = assetsUtil.prepare(assets);
@@ -47,41 +45,34 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
   const store = configureStore();
   const { url } = ctx.request;
 
-  ctx.type = 'html';
+  // ctx.type = 'html';
 
-  try {
-    // Load data from server-side first
-    await prefetch({ routes, store, url });
+  // Load data from server-side first
+  await prefetch({ routes, store, url });
 
-    const doctype = '<!doctype html>';
-    const staticContext = {};
-    const content = (
-      <Provider store={store}>
-        <StaticRouter location={url} context={staticContext}>
-          {renderRoutes(routes)}
-        </StaticRouter>
-      </Provider>
-    );
-    // const html = render({ content, assets, store });
-    const html = `${doctype}${ReactDOMServer.renderToString(render({ content, assets, store }))}`;
+  const doctype = '<!doctype html>';
+  const staticContext = {};
+  const content = (
+    <Provider store={store}>
+      <StaticRouter location={url} context={staticContext}>
+        {renderRoutes(routes)}
+      </StaticRouter>
+    </Provider>
+  );
+  // const html = render({ content, assets, store });
+  const html = `${doctype}${ReactDOMServer.renderToString(render({ content, assets, store }))}`;
 
-    // Check if the render result contains a redirect, if so we need to set
-    // the specific status and redirect header and end the response
-    if (staticContext.url) {
-      ctx.status = 301;
+  // Check if the render result contains a redirect, if so we need to set
+  // the specific status and redirect header and end the response
+  if (staticContext.url) {
+    ctx.status = 301;
 
-      return ctx.redirect(staticContext.url);
-    }
-
-    // Check page status
-    ctx.status = staticContext.status === '404' ? 404 : 200;
-    ctx.body = html;
-  } catch (error) {
-    ctx.status = 500;
-    ctx.body = error.message;
-
-    log(error);
+    return ctx.redirect(staticContext.url);
   }
+
+  // Check page status
+  ctx.status = staticContext.status === '404' ? 404 : 200;
+  ctx.body = html;
 };
 
 export default serverSideRenderer;

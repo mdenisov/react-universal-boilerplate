@@ -50,12 +50,12 @@ class Feed extends PureComponent {
 
   content() {
     return (
-      this.props.feed.isLoading
+      this.props.posts.loading
         ? (
           <p>Loading posts</p>
         )
         : (
-          this.props.feed.posts.map(post => (
+          this.props.posts.data.map(post => (
             <Post
               key={post.id}
               {...post}
@@ -100,16 +100,15 @@ class Feed extends PureComponent {
 // Feed.prefetch = [() => { return actions.fetchAllPosts(); }];
 
 const mapStateToProps = state => ({
-  feed: state.post,
+  posts: state.post.posts,
 });
 
 Feed.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  feed: PropTypes.shape({
-    currentPost: PropTypes.object,
-    posts: PropTypes.array,
-    isLoading: PropTypes.bool,
-    isError: PropTypes.bool,
+  posts: PropTypes.shape({
+    loading: PropTypes.bool,
+    error: PropTypes.string,
+    data: PropTypes.array,
   }).isRequired,
 };
 

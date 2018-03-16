@@ -1,4 +1,4 @@
-import 'isomorphic-fetch';
+import ApiClient from '../../../shared/utils/ApiClient';
 
 const module = 'feed';
 
@@ -13,14 +13,6 @@ export const POST_LOAD_FAILURE = `${module}/post/load/failure`;
 export const POST_REMOVE = `${module}/post/remove`;
 export const POST_ADD = `${module}/post/add`;
 
-const DEFAULT_OPTIONS = {
-  // credentials: 'include',
-  // mode: 'cors',
-  cache: 'default',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-};
 
 /*
  * ACTIONS
@@ -37,7 +29,7 @@ function fetchAllPostsRequest() {
 function fetchAllPostsSuccess(response) {
   return {
     type: POSTS_LOAD_SUCCESS,
-    posts: response.posts,
+    data: response,
   };
 }
 
@@ -52,25 +44,18 @@ export function fetchAllPosts() {
   return async (dispatch) => {
     dispatch(fetchAllPostsRequest());
 
-    const url = 'http://localhost:8000/api/v1/posts/list';
-
-    try {
-      const res = await fetch(url, {
-        ...DEFAULT_OPTIONS,
-        method: 'post',
-      })
-        .then(response => response.json());
-
-      dispatch(fetchAllPostsSuccess(res));
-    } catch (err) {
-      dispatch(fetchAllPostsFailure(err.message));
-    }
+    return ApiClient('/v1/posts/list', 'post')
+      .then(res => dispatch(fetchAllPostsSuccess(res)))
+      .catch(res => dispatch(fetchAllPostsFailure(res)));
   };
 }
 
 export function fetchAllPostsIfNeeded() {
   return (dispatch, getState) => {
-    if (getState().post.posts.length === 0) {
+    const { posts = {} } = getState().post;
+
+    // if (posts.data.length === 0 && !posts.error) {
+    if (posts.data.length === 0) {
       return dispatch(fetchAllPosts());
     }
 
@@ -89,7 +74,7 @@ function fetchSinglePostRequest() {
 function fetchSinglePostSuccess(response) {
   return {
     type: POST_LOAD_SUCCESS,
-    post: response.post,
+    data: response,
   };
 }
 
@@ -104,30 +89,20 @@ export function fetchSinglePost(slug) {
   return async (dispatch) => {
     dispatch(fetchSinglePostRequest());
 
-    const url = 'http://localhost:8000/api/v1/posts/get';
-
-    try {
-      const res = await fetch(url, {
-        ...DEFAULT_OPTIONS,
-        method: 'post',
-        body: JSON.stringify({
-          slug,
-        }),
-      })
-        .then(response => response.json());
-
-      dispatch(fetchSinglePostSuccess(res));
-    } catch (err) {
-      dispatch(fetchSinglePostFailure(err.message));
-    }
+    return ApiClient('/v1/posts/get', 'post', {
+      slug,
+    })
+      .then(res => dispatch(fetchSinglePostSuccess(res)))
+      .catch(res => dispatch(fetchSinglePostFailure(res)));
   };
 }
 
 export function fetchSinglePostIfNeeded(params) {
   return (dispatch, getState) => {
-    const post = getState().post.currentPost;
+    const { post = {} } = getState().post;
 
-    if (!post || post.slug !== params.slug) {
+    // if ((post.slug !== params.slug) && !post.error) {
+    if (post.slug !== params.slug) {
       return dispatch(fetchSinglePost(params.slug));
     }
 
@@ -145,15 +120,9 @@ export function deletePost(slug) {
   return (dispatch) => {
     dispatch(removePost(slug));
 
-    fetch('/api/v1/posts/remove', {
-      ...DEFAULT_OPTIONS,
-      method: 'post',
-      body: JSON.stringify({
-        slug,
-      }),
-    })
-      .then(() => {})
-      .catch(() => {});
+    return ApiClient('/v1/posts/remove', 'post', {
+      slug,
+    });
   };
 }
 
@@ -165,20 +134,13 @@ function addPost(post) {
 
 export function createPost(title, content) {
   return (dispatch) => {
-    fetch('/api/v1/posts/create', {
-      ...DEFAULT_OPTIONS,
-      method: 'post',
-      body: JSON.stringify({
-        post: {
-          title,
-          content,
-          name: 'Admin',
-        },
-      }),
-    })
-      .then(response => response.json())
-      .then((response) => { dispatch(addPost(response.post)); })
-      .catch(() => {});
+    return ApiClient('/v1/posts/get', 'post', {
+      post: {
+        title,
+        content,
+        name: 'Admin',
+      },
+    }).then(res => dispatch(addPost(res)));
   };
 }
 
@@ -187,10 +149,12 @@ export function createPost(title, content) {
  */
 
 const defaultState = {
-  currentPost: {},
-  posts: [],
-  isLoading: false,
-  isError: false,
+  post: {
+    data: {},
+  },
+  posts: {
+    data: [],
+  },
 };
 
 // Reducer
@@ -202,9 +166,10 @@ export default function reducer(state = defaultState, action) {
     case POSTS_LOAD: {
       newState = {
         ...state,
-        isLoading: true,
-        isError: false,
-        currentPost: {},
+        posts: {
+          loading: true,
+          data: [],
+        },
       };
 
       break;
@@ -213,9 +178,10 @@ export default function reducer(state = defaultState, action) {
     case POSTS_LOAD_SUCCESS: {
       newState = {
         ...state,
-        isLoading: false,
-        isError: false,
-        posts: [...action.posts],
+        posts: {
+          loading: false,
+          data: [...action.data],
+        },
       };
 
       break;
@@ -224,8 +190,11 @@ export default function reducer(state = defaultState, action) {
     case POSTS_LOAD_FAILURE: {
       newState = {
         ...state,
-        isLoading: false,
-        isError: true,
+        posts: {
+          loading: false,
+          data: [],
+          ...action,
+        },
       };
 
       break;
@@ -234,8 +203,10 @@ export default function reducer(state = defaultState, action) {
     case POST_LOAD: {
       newState = {
         ...state,
-        isLoading: true,
-        isError: false,
+        post: {
+          loading: true,
+          data: {},
+        },
       };
 
       break;
@@ -244,10 +215,9 @@ export default function reducer(state = defaultState, action) {
     case POST_LOAD_SUCCESS: {
       newState = {
         ...state,
-        isLoading: false,
-        isError: false,
-        currentPost: {
-          ...action.post,
+        post: {
+          loading: false,
+          data: { ...action.data },
         },
       };
 
@@ -257,8 +227,11 @@ export default function reducer(state = defaultState, action) {
     case POST_LOAD_FAILURE: {
       newState = {
         ...state,
-        isLoading: false,
-        isError: true,
+        post: {
+          loading: false,
+          data: {},
+          ...action,
+        },
       };
 
       break;

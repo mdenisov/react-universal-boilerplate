@@ -24,7 +24,7 @@ const posts = [
 async function list(ctx) {
   try {
     ctx.status = 200;
-    ctx.body = { posts: posts.sort((a, b) => b.id - a.id) };
+    ctx.body = posts.sort((a, b) => b.id - a.id);
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
     ctx.body = {
@@ -60,7 +60,7 @@ async function create(ctx) {
     posts.push(saved);
 
     ctx.status = 201;
-    ctx.body = { post: saved };
+    ctx.body = saved;
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
     ctx.body = {
@@ -79,16 +79,15 @@ async function get(ctx) {
     const { slug } = ctx.request.body;
     const post = posts.find(item => item.slug === slug);
 
-    if (!post) {
+    if (post) {
+      ctx.status = 200;
+      ctx.body = post;
+    } else {
       ctx.status = 404;
       ctx.body = {
         message: 'That post does not exist.',
       };
-      return;
     }
-
-    ctx.status = 200;
-    ctx.body = { post };
   } catch (e) {
     ctx.status = e.statusCode || e.status || 500;
     ctx.body = {
