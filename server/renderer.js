@@ -42,6 +42,7 @@ const render = ({ content, store, assets }) => { // eslint-disable-line
 };
 
 const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
+  const start = new Date();
   const store = configureStore();
   const { url } = ctx.request;
 
@@ -73,6 +74,8 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
   // Check page status
   ctx.status = staticContext.status === '404' ? 404 : 200;
   ctx.body = html;
+
+  debug('SSR')('', `${new Date() - start}ms`);
 };
 
 export default serverSideRenderer;

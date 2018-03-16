@@ -28,7 +28,7 @@ function mapPathForService(availableServices = {}, url = []) {
   return (typeof actionAndParams.service === 'function') ? actionAndParams : notFound;
 }
 
-export default async function api(ctx) {
+async function api(ctx) {
   const urlPath = ctx.request.url.split('?')[0].split('/');
   const { service, params } = await mapPathForService(services, urlPath);
 
@@ -41,9 +41,19 @@ export default async function api(ctx) {
 
     log(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
 
-    return await service(ctx); // eslint-disable-line
-  }
+    try {
+      const result = await service(ctx);
 
-  ctx.status = 404;
-  ctx.body = 'NOT FOUND';
+      ctx.status = 200;
+      ctx.body = result;
+    } catch (e) {
+      ctx.status = e.statusCode || e.status || 500;
+      ctx.body = { message: e.message };
+    }
+  } else {
+    ctx.status = 404;
+    ctx.body = 'NOT FOUND';
+  }
 }
+
+export default api;

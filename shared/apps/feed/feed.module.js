@@ -98,7 +98,7 @@ export function fetchSinglePostIfNeeded(params) {
   return (dispatch, getState) => {
     const { post = {} } = getState().post;
 
-    if ((post.slug !== params.slug) && !post.error) {
+    if ((post.data.slug !== params.slug) && !post.error) {
       return dispatch(fetchSinglePost(params.slug));
     }
 
@@ -174,6 +174,7 @@ export default function reducer(state = defaultState, action) {
         ...state,
         posts: {
           loading: true,
+          error: false,
           data: [],
         },
       };
@@ -186,6 +187,7 @@ export default function reducer(state = defaultState, action) {
         ...state,
         posts: {
           loading: false,
+          error: false,
           data: [...action.data],
         },
       };
@@ -211,6 +213,7 @@ export default function reducer(state = defaultState, action) {
         ...state,
         post: {
           loading: true,
+          error: false,
           data: {},
         },
       };
@@ -223,6 +226,7 @@ export default function reducer(state = defaultState, action) {
         ...state,
         post: {
           loading: false,
+          error: false,
           data: { ...action.data },
         },
       };

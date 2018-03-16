@@ -69,7 +69,10 @@ PostView.propTypes = {
   dispatch: PropTypes.func.isRequired,
   post: PropTypes.shape({
     loading: PropTypes.bool,
-    error: PropTypes.string,
+    error: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.string,
+    ]),
     data: PropTypes.object,
   }).isRequired,
   match: PropTypes.shape({

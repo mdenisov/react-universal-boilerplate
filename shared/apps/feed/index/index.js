@@ -107,7 +107,10 @@ Feed.propTypes = {
   dispatch: PropTypes.func.isRequired,
   posts: PropTypes.shape({
     loading: PropTypes.bool,
-    error: PropTypes.string,
+    error: PropTypes.oneOfType([
+      PropTypes.bool,
+      PropTypes.string,
+    ]),
     data: PropTypes.array,
   }).isRequired,
 };
