@@ -54,8 +54,7 @@ export function fetchAllPostsIfNeeded() {
   return (dispatch, getState) => {
     const { posts = {} } = getState().post;
 
-    // if (posts.data.length === 0 && !posts.error) {
-    if (posts.data.length === 0) {
+    if (posts.data.length === 0 && !posts.error) {
       return dispatch(fetchAllPosts());
     }
 
@@ -101,8 +100,7 @@ export function fetchSinglePostIfNeeded(params) {
   return (dispatch, getState) => {
     const { post = {} } = getState().post;
 
-    // if ((post.slug !== params.slug) && !post.error) {
-    if (post.slug !== params.slug) {
+    if ((post.slug !== params.slug) && !post.error) {
       return dispatch(fetchSinglePost(params.slug));
     }
 
