@@ -45,7 +45,7 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
   const store = configureStore();
   const { url } = ctx.request;
 
-  // ctx.type = 'html';
+  ctx.type = 'html';
 
   // Load data from server-side first
   await prefetch({ routes, store, url });
