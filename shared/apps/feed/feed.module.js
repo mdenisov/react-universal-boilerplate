@@ -13,13 +13,9 @@ export const POST_LOAD_FAILURE = `${module}/post/load/failure`;
 export const POST_REMOVE = `${module}/post/remove`;
 export const POST_ADD = `${module}/post/add`;
 
-
-/*
- * ACTIONS
+/**
+ * Fetch All Posts
  */
-
-// Fetch All Posts
-
 function fetchAllPostsRequest() {
   return {
     type: POSTS_LOAD,
@@ -62,7 +58,9 @@ export function fetchAllPostsIfNeeded() {
   };
 }
 
-// Fetch Single Post
+/**
+ * Fetch Single Post
+ */
 
 function fetchSinglePostRequest() {
   return {
@@ -108,7 +106,9 @@ export function fetchSinglePostIfNeeded(params) {
   };
 }
 
-// Delete a Post
+/**
+ * Delete a Post
+ */
 
 function removePost(slug) {
   return { type: POST_REMOVE, slug };
@@ -124,7 +124,9 @@ export function deletePost(slug) {
   };
 }
 
-// Create a Post
+/**
+ * Create a Post
+ */
 
 function addPost(data) {
   return { type: POST_ADD, data };
@@ -144,15 +146,19 @@ export function createPost(title, content) {
   };
 }
 
-/*
+/**
  * REDUCER
  */
 
 const defaultState = {
   post: {
+    loading: false,
+    error: false,
     data: {},
   },
   posts: {
+    loading: false,
+    error: false,
     data: [],
   },
 };
