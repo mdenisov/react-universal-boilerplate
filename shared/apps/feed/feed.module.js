@@ -132,11 +132,13 @@ function addPost(post) {
 
 export function createPost(title, content) {
   return (dispatch) => {
+    const name = 'Admin';
+
     return ApiClient('/v1/posts/get', 'post', {
       post: {
         title,
         content,
-        name: 'Admin',
+        name,
       },
     }).then(res => dispatch(addPost(res)));
   };
