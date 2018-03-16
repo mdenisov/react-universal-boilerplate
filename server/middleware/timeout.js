@@ -1,7 +1,7 @@
 import Timeout from 'koa-better-timeout';
 
-function timeoutMiddleware(options) {
-  const { ms = 3000, logger } = options;
+function timeoutMiddleware(options = {}) {
+  const { ms = 3000 } = options;
 
   return async function timeout(ctx, next) {
     try {
@@ -12,10 +12,6 @@ function timeoutMiddleware(options) {
 
       await tm.middleware(ctx, next);
     } catch (err) {
-      if (logger) {
-        logger.error(err);
-      }
-
       ctx.throw(err);
     }
   };
