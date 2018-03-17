@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
 
-import { checkStatus, parseJSON } from './ajax';
+import { checkStatus, parseJSON } from './network';
 
 export const API_URL = (typeof window === 'undefined' || process.env.NODE_ENV === 'test')
   ? 'http://localhost:8000/api'
