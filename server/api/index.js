@@ -42,9 +42,10 @@ async function api(ctx) {
     log(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
 
     try {
+      ctx.status = 200;
+
       const result = await service(ctx);
 
-      ctx.status = 200;
       ctx.body = result;
     } catch (e) {
       const { statusCode, payload } = e.output;

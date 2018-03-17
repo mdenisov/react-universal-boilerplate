@@ -23,7 +23,7 @@ describe('Post APIs', () => {
     const response = await request(server.server).get('/api/v1/posts/list');
 
     expect(response.statusCode).toBe(200);
-    expect(response.body.posts.length).toEqual(5);
+    expect(response.body.length).toEqual(5);
   }, 5000);
 
   test('Should add a new post', async () => {
