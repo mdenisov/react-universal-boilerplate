@@ -109,7 +109,7 @@ Feed.propTypes = {
     loading: PropTypes.bool,
     error: PropTypes.oneOfType([
       PropTypes.bool,
-      PropTypes.string,
+      PropTypes.object,
     ]),
     data: PropTypes.array,
   }).isRequired,

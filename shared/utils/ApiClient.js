@@ -1,5 +1,7 @@
 import fetch from 'isomorphic-fetch';
 
+import { checkStatus, parseJSON } from './ajax';
+
 export const API_URL = (typeof window === 'undefined' || process.env.NODE_ENV === 'test')
   ? 'http://localhost:8000/api'
   : '/api';
@@ -9,18 +11,13 @@ function ApiClient(endpoint, method = 'post', body) {
     cache: 'default',
     headers: {
       'content-type': 'application/json',
+      accept: 'application/json',
     },
     method,
     body: JSON.stringify(body),
   })
-    .then(response => response.json().then(json => ({ json, response })))
-    .then(({ json, response }) => {
-      if (!response.ok) {
-        return Promise.reject(json.message);
-      }
-
-      return json;
-    });
+    .then(checkStatus)
+    .then(parseJSON);
 }
 
 export default ApiClient;

@@ -23,9 +23,9 @@ class PostView extends PureComponent {
     this.props.dispatch(actions.deletePost(slug));
   }
 
-  renderError() { // eslint-disable-line
+  renderError() {
     return (
-      <div className={styles.loading}>{this.props.post.error}</div>
+      <div className={styles.loading}>{this.props.post.error.message}</div>
     );
   }
 
@@ -71,7 +71,7 @@ PostView.propTypes = {
     loading: PropTypes.bool,
     error: PropTypes.oneOfType([
       PropTypes.bool,
-      PropTypes.string,
+      PropTypes.object,
     ]),
     data: PropTypes.object,
   }).isRequired,
