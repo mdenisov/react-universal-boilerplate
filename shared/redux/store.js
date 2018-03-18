@@ -1,4 +1,4 @@
-import { applyMiddleware, createStore } from 'redux';
+import { applyMiddleware, createStore, compose } from 'redux';
 import { createLogger } from 'redux-logger'; // eslint-disable-line
 import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
@@ -6,27 +6,34 @@ import thunk from 'redux-thunk';
 import reducers from './reducers';
 
 const { NODE_ENV } = process.env;
+const IS_DEV = NODE_ENV === 'development';
 
 export default ({ initialState = {} } = {}) => {
-  const packages = [thunk];
+  // Middleware and store enhancers
+  const enhancers = [
+    // thunk middleware
+    applyMiddleware(thunk),
+    // side effect middleware
+    applyMiddleware(createSagaMiddleware()),
+  ];
 
-  if (__CLIENT__ && NODE_ENV === 'development') {
+  if (__CLIENT__ && IS_DEV) {
     // Push the middleware that are specific for development
-    packages.push(createLogger({ collapsed: true }));
+    enhancers.push(applyMiddleware(createLogger({ collapsed: true })));
+
+    // Enable DevTools only when rendering on client and during development.
+    if (window.devToolsExtension) {
+      enhancers.push(window.devToolsExtension());
+    }
   }
-
-  // Saga middleware
-  packages.push(createSagaMiddleware());
-
-  const enhancers = applyMiddleware(...packages);
 
   const store = createStore(
     reducers,
     initialState,
-    enhancers,
+    compose(...enhancers),
   );
 
-  if (__CLIENT__ && NODE_ENV === 'development') {
+  if (__CLIENT__ && IS_DEV) {
     if (module.hot) {
       // Enable Webpack hot module replacement for reducers
       module.hot.accept('./reducers', () => {
