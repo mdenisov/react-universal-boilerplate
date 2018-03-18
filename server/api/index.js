@@ -33,8 +33,7 @@ async function api(ctx) {
   const urlPath = ctx.request.url.split('?')[0].split('/');
   const { service, params } = await mapPathForService(services, urlPath);
 
-  // console.log('api => ', urlPath, service, params);
-
+  ctx.api = true;
   ctx.type = 'json';
 
   if (service) {
@@ -42,11 +41,7 @@ async function api(ctx) {
 
     log(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
 
-    // try {
     await service(ctx);
-    // } catch (e) {
-    //   ctx.throw(Boom.internal(e.message));
-    // }
   } else {
     ctx.throw(Boom.notFound());
   }
