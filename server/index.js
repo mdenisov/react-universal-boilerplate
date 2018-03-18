@@ -11,7 +11,7 @@ const { NODE_ENV } = process.env;
 if (NODE_ENV === 'test' || NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
 } else {
-  process.env.DEBUG = '*,-babel,-koa-static,-koa-better-error-handler1';
+  process.env.DEBUG = '*,-babel,-koa-static,-koa-send,-koa-better-error-handler';
 }
 
 const Server = require('./server');
