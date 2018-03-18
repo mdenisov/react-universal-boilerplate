@@ -1,5 +1,4 @@
 import { applyMiddleware, createStore, compose } from 'redux';
-import { createLogger } from 'redux-logger'; // eslint-disable-line
 import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 
@@ -18,9 +17,6 @@ export default ({ initialState = {} } = {}) => {
   ];
 
   if (__CLIENT__ && IS_DEV) {
-    // Push the middleware that are specific for development
-    enhancers.push(applyMiddleware(createLogger({ collapsed: true })));
-
     // Enable DevTools only when rendering on client and during development.
     if (window.devToolsExtension) {
       enhancers.push(window.devToolsExtension());
