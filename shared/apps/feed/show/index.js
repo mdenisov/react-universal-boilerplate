@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'; // eslint-disable-line
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 
-import * as actions from '../feed.module';
 import Post from '../components/Post/index';
+
+import * as actions from '../feed.module';
+import { getPostState } from '../feed.selectors';
 
 import styles from '../feed.styles.css';
 
@@ -62,7 +64,7 @@ class PostView extends PureComponent {
 }
 
 const mapStateToProps = state => ({
-  post: state.post.post,
+  post: getPostState(state),
 });
 
 PostView.propTypes = {
