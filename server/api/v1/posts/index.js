@@ -20,10 +20,11 @@ const posts = [
 
 /**
  * Get all posts
+ * @param ctx
  * @returns void
  */
-async function list() {
-  return posts.sort((a, b) => b.id - a.id);
+async function list(ctx) {
+  ctx.body = posts.sort((a, b) => b.id - a.id);
 }
 
 /**
@@ -37,21 +38,20 @@ async function create(ctx) {
     !ctx.request.body.post.title ||
     !ctx.request.body.post.content
   ) {
-    return ctx.throw(Boom.badRequest('invalid query'));
+    ctx.throw(Boom.badRequest('invalid query'));
+  } else {
+    const id = posts.slice(-1)[0].id + 1;
+    const saved = {
+      ...ctx.request.body.post,
+      slug: `${ctx.request.body.post.title}-${id}`,
+      id,
+    };
+
+    posts.push(saved);
+
+    ctx.status = 201;
+    ctx.body = saved;
   }
-
-  const id = posts.slice(-1)[0].id + 1;
-  const saved = {
-    ...ctx.request.body.post,
-    slug: `${ctx.request.body.post.title}-${id}`,
-    id,
-  };
-
-  posts.push(saved);
-
-  ctx.status = 201;
-
-  return saved;
 }
 
 /**
@@ -64,10 +64,10 @@ async function get(ctx) {
   const post = posts.find(item => item.slug === slug);
 
   if (post) {
-    return post;
+    ctx.body = post;
+  } else {
+    ctx.throw(Boom.notFound('That post does not exist.'));
   }
-
-  return ctx.throw(Boom.notFound('That post does not exist.'));
 }
 
 /**
@@ -80,10 +80,11 @@ async function remove(ctx) {
   const post = posts.find(item => item.slug === slug);
 
   if (post) {
-    return {};
+    ctx.status = 204;
+    ctx.body = null;
+  } else {
+    ctx.throw(Boom.notFound('That post does not exist.'));
   }
-
-  return ctx.throw(Boom.notFound('That post does not exist.'));
 }
 
 export default {

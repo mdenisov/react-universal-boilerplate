@@ -43,6 +43,6 @@ describe('Post APIs', () => {
   test('Should delete post by slug', async () => {
     const response = await request(server.server).post('/api/v1/posts/remove').send({ slug: 'hello-2' });
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(204);
   }, 5000);
 });

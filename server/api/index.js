@@ -1,3 +1,4 @@
+import Boom from 'boom';
 import debug from 'debug'; // eslint-disable-line
 
 import services from './services';
@@ -42,20 +43,25 @@ async function api(ctx) {
     log(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
 
     try {
-      ctx.status = 200;
-
-      const result = await service(ctx);
-
-      ctx.body = result;
+      await service(ctx);
     } catch (e) {
-      const { statusCode, payload } = e.output;
-
-      ctx.status = statusCode || 500;
-      ctx.body = payload || { message: 'Internal Error' };
+      ctx.throw(Boom.internal(e.message));
     }
+
+    // try {
+    //   ctx.status = 200;
+    //
+    //   const result = await service(ctx);
+    //
+    //   ctx.body = result;
+    // } catch (e) {
+    //   const { statusCode, payload } = e.output;
+    //
+    //   ctx.status = statusCode || 500;
+    //   ctx.body = payload || { message: 'Internal Error' };
+    // }
   } else {
-    ctx.status = 404;
-    ctx.body = 'NOT FOUND';
+    ctx.throw(Boom.notFound());
   }
 }
 

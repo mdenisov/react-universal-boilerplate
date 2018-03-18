@@ -18,5 +18,6 @@ export const parseJSON = (response) => {
     return null;
   }
 
-  return response.json().then(json => ({ json, response }));
+  // return response.json().then(json => ({ json, response }));
+  return response.json().then(json => json);
 };
