@@ -8,6 +8,10 @@ const path = require('path'); // eslint-disable-line
 
 const { NODE_ENV } = process.env;
 
+global.__CLIENT__ = false;
+global.__SERVER__ = true;
+global.__DEV__ = NODE_ENV === 'development';
+
 if (NODE_ENV === 'test' || NODE_ENV === 'production') {
   process.env.DEBUG = '-*';
 } else {
@@ -16,6 +20,7 @@ if (NODE_ENV === 'test' || NODE_ENV === 'production') {
 
 const Server = require('./server');
 const api = require('./api');
+// const SSR = __DEV__ ? require('./renderer') : require('./SSR').default;
 const SSR = require('./SSR').default;
 const Logger = require('./utils/logger');
 const assets = require('../public/dist/webpack-assets.json');
@@ -36,10 +41,6 @@ process.on('unhandledRejection', (reason, p) => {
 process.on('uncaughtException', (error) => {
   logger.error(`Uncaught Exception: ${error.message}`, JSON.stringify(error.stack));
 });
-
-global.__CLIENT__ = false;
-global.__SERVER__ = true;
-global.__DEV__ = NODE_ENV === 'development';
 
 // Create server instance
 const server = new Server({
