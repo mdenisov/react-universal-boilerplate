@@ -48,11 +48,19 @@ class Feed extends PureComponent {
     });
   }
 
-  content() {
+  renderError() {
+    return (
+      <div className={styles.wrapper}>
+        <div className={styles.loading}>{this.props.posts.error.message}</div>
+      </div>
+    );
+  }
+
+  renderContent() {
     return (
       this.props.posts.loading
         ? (
-          <p>Loading posts</p>
+          <div className={styles.loading}>Loading Post</div>
         )
         : (
           this.props.posts.data.map(post => (
@@ -70,9 +78,11 @@ class Feed extends PureComponent {
     return (
       <div>
         <Helmet title="Blog" />
-        <div>
-          { this.content() }
-        </div>
+        {
+          this.props.posts.error
+            ? this.renderError()
+            : this.renderContent()
+        }
         <div className={styles.form}>
           <input
             type="text"
