@@ -20,7 +20,9 @@
 		"expect": true,
 		"module": true,
 		"fetch": true,
-		"__CLIENT__": true
+		"__CLIENT__": true,
+		"__SERVER__": true,
+		"__DEV__": true
 	},
 	"plugins": [
 		"react",
