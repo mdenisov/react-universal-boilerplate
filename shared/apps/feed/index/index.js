@@ -50,9 +50,7 @@ class Feed extends PureComponent {
 
   renderError() {
     return (
-      <div className={styles.wrapper}>
-        <div className={styles.loading}>{this.props.posts.error.message}</div>
-      </div>
+      <div className={styles.loading}>{this.props.posts.error.message}</div>
     );
   }
 
