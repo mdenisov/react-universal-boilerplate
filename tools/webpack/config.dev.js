@@ -122,6 +122,7 @@ const client = {
 };
 
 const server = {
+  cache: true,
   context: SERVER,
   devtool: 'eval-source-map',
   stats: {
