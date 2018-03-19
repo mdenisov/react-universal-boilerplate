@@ -1,9 +1,9 @@
 import Boom from 'boom';
-import debug from 'debug'; // eslint-disable-line
 
+import Logger from '../utils/logger';
 import services from './services';
 
-const log = debug('API');
+const logger = Logger.create('API');
 
 function mapPathForService(availableServices = {}, url = []) {
   const notFound = { service: null, params: [] };
@@ -39,7 +39,7 @@ async function api(ctx) {
   if (service) {
     ctx.params = params;
 
-    log(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
+    logger.info(`call ${urlPath.join(' --> ')}`, '|', `body ${JSON.stringify(ctx.request.body)}`);
 
     await service(ctx);
   } else {

@@ -5,12 +5,14 @@ import { renderRoutes } from 'react-router-config';
 import { Provider } from 'react-redux';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
-import debug from 'debug'; // eslint-disable-line
 
 import routes from '../shared/routes';
 import configureStore from '../shared/redux/store';
-import prefetch from '../server/utils/prefetch';
-import assetsUtil from '../server/utils/assets';
+import prefetch from './utils/prefetch';
+import assetsUtil from './utils/assets';
+import Logger from './utils/logger';
+
+const logger = Logger.create('SSR');
 
 const render = ({ content, store, assets }) => { // eslint-disable-line
   const helmet = Helmet.rewind();
@@ -75,7 +77,7 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
   ctx.status = staticContext.status === '404' ? 404 : 200;
   ctx.body = html;
 
-  debug('SSR')('', `${new Date() - start}ms`);
+  logger.info(`${new Date() - start}ms`);
 };
 
 export default serverSideRenderer;

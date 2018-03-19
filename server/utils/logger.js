@@ -10,7 +10,7 @@ const _isError = require('lodash/isError');
 const _isEmpty = require('lodash/isEmpty');
 const _omit = require('lodash/omit');
 
-const { env } = require('../config');
+const IS_DEV = process.env.NODE_ENV === 'development';
 
 // `debug` (the least serious)
 // `info`
@@ -159,13 +159,13 @@ class Logger {
       const rgb = this.constructor.getRGBColor(config.namespace);
       const colored = chalk.bold.rgb(...rgb)(config.namespace);
 
-      namespace = env === 'development'
+      namespace = IS_DEV
         ? `${colored} `
         : `${config.namespace} `;
     }
 
     const date = config.timestamp ? `${new Date().toISOString()} ` : '';
-    const output = env === 'development'
+    const output = IS_DEV
       ? `${chalk[levels[level]].black('', level.toUpperCase(), '')} ${namespace}${message}`
       : `[${level.toUpperCase()}] ${namespace}${JSON.stringify(message)}`;
 
