@@ -76,7 +76,7 @@ const client = {
         options: { limit: 10240 },
       },
       {
-        test: /\.(gif|png|jpe?g|webp)$/,
+        test: /\.(gif|png|jpe?g|svg)$/i,
         // Any image below or equal to 10K will be converted to inline base64 instead
         use: [
           {
