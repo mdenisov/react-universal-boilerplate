@@ -20,7 +20,6 @@ if (NODE_ENV === 'test' || NODE_ENV === 'production') {
 
 const Server = require('./server');
 const api = require('./api');
-// const SSR = __DEV__ ? require('./renderer') : require('./SSR').default;
 const SSR = require('./SSR').default;
 const Logger = require('./utils/logger');
 const assets = require('../public/dist/webpack-assets.json');
