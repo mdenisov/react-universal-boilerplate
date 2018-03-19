@@ -45,7 +45,7 @@
     "start:dev": "cross-env NODE_ENV=development nodemon server/index.js",
     "prod": "npm run build:prod && npm run start:prod",
     "build:prod": "cross-env NODE_ENV=production npm run clean && webpack --config ./tools/webpack/config.prod.js --progress --colors",
-    "start:prod": "cross-env NODE_ENV=production node server/index.js"
+    "start:prod": "cross-env NODE_ENV=production node tools/server/cluster.js"
   },
   "dependencies": {
     "boom": "^7.2.0",
@@ -69,6 +69,7 @@
     "koa-router": "^7.4.0",
     "koa-static": "^4.0.2",
     "lodash": "^4.17.5",
+    "os": "^0.1.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
     "react-helmet": "^5.2.0",
