@@ -167,7 +167,7 @@ class Logger {
     const date = config.timestamp ? `${new Date().toISOString()} ` : '';
     const output = env === 'development'
       ? `${chalk[levels[level]].black('', level.toUpperCase(), '')} ${namespace}${message}`
-      : `${level.toUpperCase()} ${namespace}${JSON.stringify(message)}`;
+      : `[${level.toUpperCase()}] ${namespace}${JSON.stringify(message)}`;
 
     console.log(`${date}${output}`);
 
