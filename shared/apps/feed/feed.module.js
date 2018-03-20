@@ -34,6 +34,7 @@ const defaultState = {
  */
 
 const reducer = handleActions({
+  // List
   [postsLoad]: state => ({
     ...state,
     posts: {
@@ -61,6 +62,7 @@ const reducer = handleActions({
     },
   }),
 
+  // Single
   [postLoad]: state => ({
     ...state,
     post: {
@@ -88,6 +90,7 @@ const reducer = handleActions({
     },
   }),
 
+  // Remove
   [postRemove]: (state, { payload: { slug } }) => ({
     ...state,
     posts: {
@@ -97,6 +100,7 @@ const reducer = handleActions({
     },
   }),
 
+  // Create
   [postCreate]: (state, { payload: { data } }) => ({
     ...state,
     posts: {
