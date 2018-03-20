@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'; // eslint-disable-line
 import { connect } from 'react-redux';
 import Helmet from 'react-helmet';
 
-import * as actions from '../feed.module';
 import Post from '../components/Post/index';
+
+import * as actions from '../feed.module';
+import { getPostsState } from '../feed.selectors';
 
 import styles from '../feed.styles.css';
 
@@ -108,7 +110,7 @@ class Feed extends PureComponent {
 // Feed.prefetch = [() => { return actions.fetchAllPosts(); }];
 
 const mapStateToProps = state => ({
-  posts: state.post.posts,
+  posts: getPostsState(state),
 });
 
 Feed.propTypes = {

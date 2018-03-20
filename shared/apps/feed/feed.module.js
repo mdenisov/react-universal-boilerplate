@@ -126,7 +126,7 @@ export function fetchAllPosts() {
 
 export function fetchAllPostsIfNeeded() {
   return (dispatch, getState) => {
-    const { posts = {} } = getState().post;
+    const { posts = {} } = getState().feed;
 
     if (posts.data.length === 0 && !posts.error) {
       return dispatch(fetchAllPosts());
@@ -154,7 +154,7 @@ export function fetchSinglePost(slug) {
 
 export function fetchSinglePostIfNeeded(params) {
   return (dispatch, getState) => {
-    const { post = {} } = getState().post;
+    const { post = {} } = getState().feed;
 
     if ((post.data.slug !== params.slug) && !post.error) {
       return dispatch(fetchSinglePost(params.slug));
