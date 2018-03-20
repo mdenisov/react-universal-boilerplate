@@ -1,48 +1,122 @@
+import { createAction, handleActions } from 'redux-actions';
+
 import ApiClient from '../../../shared/utils/ApiClient';
 
 const module = 'feed';
 
-export const POSTS_LOAD = `${module}/posts/load`;
-export const POSTS_LOAD_SUCCESS = `${module}/posts/load/success`;
-export const POSTS_LOAD_FAILURE = `${module}/posts/load/failure`;
+export const postsLoad = createAction(`${module}/posts/load`);
+export const postsLoadSuccess = createAction(`${module}/posts/load/success`, data => ({ data }));
+export const postsLoadFailure = createAction(`${module}/posts/load/failure`, error => ({ error }));
 
-export const POST_LOAD = `${module}/post/load`;
-export const POST_LOAD_SUCCESS = `${module}/post/load/success`;
-export const POST_LOAD_FAILURE = `${module}/post/load/failure`;
+export const postLoad = createAction(`${module}/post/load`);
+export const postLoadSuccess = createAction(`${module}/post/load/success`, data => ({ data }));
+export const postLoadFailure = createAction(`${module}/post/load/failure`, error => ({ error }));
 
-export const POST_REMOVE = `${module}/post/remove`;
-export const POST_ADD = `${module}/post/add`;
+export const postRemove = createAction(`${module}/post/remove`, slug => ({ slug }));
+export const postCreate = createAction(`${module}/post/create`, data => ({ data }));
+
+
+const defaultState = {
+  post: {
+    loading: false,
+    error: false,
+    data: {},
+  },
+  posts: {
+    loading: false,
+    error: false,
+    data: [],
+  },
+};
 
 /**
- * Fetch All Posts
+ * REDUCER
  */
-function fetchAllPostsRequest() {
-  return {
-    type: POSTS_LOAD,
-  };
-}
 
-function fetchAllPostsSuccess(response) {
-  return {
-    type: POSTS_LOAD_SUCCESS,
-    data: response,
-  };
-}
+const reducer = handleActions({
+  [postsLoad]: state => ({
+    ...state,
+    posts: {
+      loading: true,
+      error: false,
+      data: [],
+    },
+  }),
 
-function fetchAllPostsFailure(error) {
-  return {
-    type: POSTS_LOAD_FAILURE,
-    error,
-  };
-}
+  [postsLoadSuccess]: (state, { payload: { data } }) => ({
+    ...state,
+    posts: {
+      loading: false,
+      error: false,
+      data: [...data],
+    },
+  }),
 
+  [postsLoadFailure]: (state, { payload: { error } }) => ({
+    ...state,
+    posts: {
+      loading: false,
+      data: [],
+      error,
+    },
+  }),
+
+  [postLoad]: state => ({
+    ...state,
+    post: {
+      loading: true,
+      error: false,
+      data: {},
+    },
+  }),
+
+  [postLoadSuccess]: (state, { payload: { data } }) => ({
+    ...state,
+    post: {
+      loading: false,
+      error: false,
+      data: { ...data },
+    },
+  }),
+
+  [postLoadFailure]: (state, { payload: { error } }) => ({
+    ...state,
+    post: {
+      loading: false,
+      data: {},
+      error,
+    },
+  }),
+
+  [postRemove]: (state, { payload: { slug } }) => ({
+    ...state,
+    posts: {
+      loading: false,
+      error: false,
+      data: [...state.posts.data.filter(post => post.slug !== slug)],
+    },
+  }),
+
+  [postCreate]: (state, { payload: { data } }) => ({
+    ...state,
+    posts: {
+      loading: false,
+      error: false,
+      data: [data, ...state.posts.data],
+    },
+  }),
+}, defaultState);
+
+/**
+ * Fetch Posts
+ */
 export function fetchAllPosts() {
   return async (dispatch) => {
-    dispatch(fetchAllPostsRequest());
+    dispatch(postsLoad());
 
     return ApiClient('/v1/posts/list', 'post')
-      .then(res => dispatch(fetchAllPostsSuccess(res)))
-      .catch(res => dispatch(fetchAllPostsFailure(res)));
+      .then(res => dispatch(postsLoadSuccess(res)))
+      .catch(res => dispatch(postsLoadFailure(res)));
   };
 }
 
@@ -62,35 +136,15 @@ export function fetchAllPostsIfNeeded() {
  * Fetch Single Post
  */
 
-function fetchSinglePostRequest() {
-  return {
-    type: POST_LOAD,
-  };
-}
-
-function fetchSinglePostSuccess(response) {
-  return {
-    type: POST_LOAD_SUCCESS,
-    data: response,
-  };
-}
-
-function fetchSinglePostFailure(error) {
-  return {
-    type: POST_LOAD_FAILURE,
-    error,
-  };
-}
-
 export function fetchSinglePost(slug) {
   return async (dispatch) => {
-    dispatch(fetchSinglePostRequest());
+    dispatch(postLoad());
 
     return ApiClient('/v1/posts/get', 'post', {
       slug,
     })
-      .then(res => dispatch(fetchSinglePostSuccess(res)))
-      .catch(res => dispatch(fetchSinglePostFailure(res)));
+      .then(res => dispatch(postLoadSuccess(res)))
+      .catch(res => dispatch(postLoadFailure(res)));
   };
 }
 
@@ -110,13 +164,9 @@ export function fetchSinglePostIfNeeded(params) {
  * Delete a Post
  */
 
-function removePost(slug) {
-  return { type: POST_REMOVE, slug };
-}
-
 export function deletePost(slug) {
   return (dispatch) => {
-    dispatch(removePost(slug));
+    dispatch(postRemove(slug));
 
     return ApiClient('/v1/posts/remove', 'post', {
       slug,
@@ -127,10 +177,6 @@ export function deletePost(slug) {
 /**
  * Create a Post
  */
-
-function addPost(data) {
-  return { type: POST_ADD, data };
-}
 
 export function createPost(title, content) {
   return (dispatch) => {
@@ -143,140 +189,9 @@ export function createPost(title, content) {
         name,
       },
     })
-      .then(res => dispatch(addPost(res)))
+      .then(res => dispatch(postCreate(res)))
       .catch(err => console.log(err));
   };
 }
 
-/**
- * REDUCER
- */
-
-const defaultState = {
-  post: {
-    loading: false,
-    error: false,
-    data: {},
-  },
-  posts: {
-    loading: false,
-    error: false,
-    data: [],
-  },
-};
-
-// Reducer
-export default function reducer(state = defaultState, action) {
-  const { type } = action;
-  let newState = state;
-
-  switch (type) {
-    case POSTS_LOAD: {
-      newState = {
-        ...state,
-        posts: {
-          loading: true,
-          error: false,
-          data: [],
-        },
-      };
-
-      break;
-    }
-
-    case POSTS_LOAD_SUCCESS: {
-      newState = {
-        ...state,
-        posts: {
-          loading: false,
-          error: false,
-          data: [...action.data],
-        },
-      };
-
-      break;
-    }
-
-    case POSTS_LOAD_FAILURE: {
-      newState = {
-        ...state,
-        posts: {
-          loading: false,
-          data: [],
-          ...action,
-        },
-      };
-
-      break;
-    }
-
-    case POST_LOAD: {
-      newState = {
-        ...state,
-        post: {
-          loading: true,
-          error: false,
-          data: {},
-        },
-      };
-
-      break;
-    }
-
-    case POST_LOAD_SUCCESS: {
-      newState = {
-        ...state,
-        post: {
-          loading: false,
-          error: false,
-          data: { ...action.data },
-        },
-      };
-
-      break;
-    }
-
-    case POST_LOAD_FAILURE: {
-      newState = {
-        ...state,
-        post: {
-          loading: false,
-          data: {},
-          ...action,
-        },
-      };
-
-      break;
-    }
-
-    case POST_REMOVE: {
-      newState = {
-        ...state,
-        posts: {
-          ...state.posts,
-          data: state.posts.data.filter(post => post.slug !== action.slug),
-        },
-      };
-
-      break;
-    }
-
-    case POST_ADD: {
-      newState = {
-        ...state,
-        posts: {
-          ...state.posts,
-          data: [action.data, ...state.posts.data],
-        },
-      };
-
-      break;
-    }
-
-    default: {
-      newState = state;
-    }
-  }
-
-  return newState;
-}
+export default reducer;
