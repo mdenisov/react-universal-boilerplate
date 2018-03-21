@@ -40,7 +40,7 @@ async function create(ctx) {
   ) {
     ctx.throw(Boom.badRequest('invalid query'));
   } else {
-    const id = posts.slice(-1)[0].id + 1;
+    const id = posts[0].id + 1;
     const saved = {
       ...ctx.request.body.post,
       slug: `${ctx.request.body.post.title}-${id}`,
