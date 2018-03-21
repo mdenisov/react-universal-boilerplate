@@ -49,13 +49,13 @@ function formatUrl(path) {
 class ApiClient {
   constructor() {
     METHODS.forEach((method) => {
-      this[method] = async (path, { params = {}, data = {} } = {}) => {
+      this[method] = (path, { params = {}, data = {} } = {}) => {
         const endpoint = formatUrl(path);
         const options = _merge({ method }, DEFAULT_OPTIONS, params) || {};
 
         options.body = JSON.stringify(data);
 
-        await fetch(endpoint, options)
+        return fetch(endpoint, options)
           .then(checkStatus)
           .then(parseJSON);
       };
