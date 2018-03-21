@@ -30,7 +30,7 @@ const client = {
       'babel-polyfill',
       './app.js',
     ],
-    vendor: ['react', 'react-dom', 'redux', 'react-redux', 'redux-thunk', 'react-router-dom', 'react-router-config'],
+    vendor: ['react', 'react-dom', 'redux', 'react-redux', 'redux-actions', 'redux-thunk', 'redux-saga', 'react-router-dom', 'react-router-config'],
   },
 
   output: {
