@@ -38,7 +38,7 @@ async function create(ctx) {
     !ctx.request.body.post.title ||
     !ctx.request.body.post.content
   ) {
-    ctx.throw(Boom.badRequest('invalid query'));
+    ctx.throw(Boom.badRequest('Invalid query.'));
   } else {
     const id = posts[0].id + 1;
     const saved = {
