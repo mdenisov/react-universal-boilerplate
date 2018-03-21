@@ -1,8 +1,15 @@
 import fetch from 'isomorphic-fetch';
+import _merge from 'lodash/merge';
 
-export const API_URL = (typeof window === 'undefined' || process.env.NODE_ENV === 'test')
-  ? 'http://localhost:8000/api'
-  : '/api';
+const METHODS = ['post'];
+const API_PATH = '/api';
+const DEFAULT_OPTIONS = {
+  cache: 'default',
+  headers: {
+    'content-type': 'application/json',
+    accept: 'application/json',
+  },
+};
 
 export function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
@@ -28,19 +35,32 @@ export function parseJSON(response) {
   return response.json().then(json => json);
 }
 
+function formatUrl(path) {
+  const adjustedPath = path[0] !== '/' ? `/${path}` : path;
 
-function ApiClient(endpoint, method = 'post', body) {
-  return fetch(`${API_URL}${endpoint}`, {
-    cache: 'default',
-    headers: {
-      'content-type': 'application/json',
-      accept: 'application/json',
-    },
-    method,
-    body: JSON.stringify(body),
-  })
-    .then(checkStatus)
-    .then(parseJSON);
+  if (__SERVER__ || process.env.NODE_ENV === 'test') {
+    // Prepend host and port of the API server to the path.
+    return `http://localhost:8000${API_PATH}${adjustedPath}`;
+  }
+
+  return `${API_PATH}${adjustedPath}`;
 }
 
-export default ApiClient;
+class ApiClient {
+  constructor() {
+    METHODS.forEach((method) => {
+      this[method] = async (path, { params = {}, data = {} } = {}) => {
+        const endpoint = formatUrl(path);
+        const options = _merge({ method }, DEFAULT_OPTIONS, params) || {};
+
+        options.body = JSON.stringify(data);
+
+        await fetch(endpoint, options)
+          .then(checkStatus)
+          .then(parseJSON);
+      };
+    });
+  }
+}
+
+export default new ApiClient();

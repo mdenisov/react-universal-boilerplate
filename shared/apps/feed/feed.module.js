@@ -1,6 +1,6 @@
 import { createAction, handleActions } from 'redux-actions';
 
-import ApiClient from '../../../shared/utils/ApiClient';
+import api from './feed.api';
 
 const module = 'feed';
 
@@ -118,7 +118,7 @@ export function fetchPosts() {
   return async (dispatch) => {
     dispatch(loadPosts());
 
-    return ApiClient('/v1/posts/list', 'post')
+    return api.fetchPosts()
       .then(res => dispatch(loadPostsSuccess(res)))
       .catch(res => dispatch(loadPostsFailure(res)));
   };
@@ -144,8 +144,10 @@ export function fetchSinglePost(slug) {
   return async (dispatch) => {
     dispatch(loadPost());
 
-    return ApiClient('/v1/posts/get', 'post', {
-      slug,
+    return api.fetchPost({
+      data: {
+        slug,
+      },
     })
       .then(res => dispatch(loadPostSuccess(res)))
       .catch(res => dispatch(loadPostFailure(res)));
@@ -172,8 +174,10 @@ export function deletePost(slug) {
   return (dispatch) => {
     dispatch(postRemove(slug));
 
-    return ApiClient('/v1/posts/remove', 'post', {
-      slug,
+    return api.removePosts({
+      data: {
+        slug,
+      },
     }).catch(err => console.log(err));
   };
 }
@@ -186,11 +190,13 @@ export function createPost(title, content) {
   return (dispatch) => {
     const name = 'Admin';
 
-    return ApiClient('/v1/posts/create', 'post', {
-      post: {
-        title,
-        content,
-        name,
+    return api.createPost({
+      data: {
+        post: {
+          title,
+          content,
+          name,
+        },
       },
     })
       .then(res => dispatch(postCreate(res)))
