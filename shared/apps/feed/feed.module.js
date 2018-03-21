@@ -145,9 +145,7 @@ export function fetchSinglePost(slug) {
     dispatch(loadPost());
 
     return api.fetchPost({
-      data: {
-        slug,
-      },
+      slug,
     })
       .then(res => dispatch(loadPostSuccess(res)))
       .catch(res => dispatch(loadPostFailure(res)));
@@ -175,9 +173,7 @@ export function deletePost(slug) {
     dispatch(postRemove(slug));
 
     return api.removePosts({
-      data: {
-        slug,
-      },
+      slug,
     }).catch(err => console.log(err));
   };
 }
@@ -191,12 +187,10 @@ export function createPost(title, content) {
     const name = 'Admin';
 
     return api.createPost({
-      data: {
-        post: {
-          title,
-          content,
-          name,
-        },
+      post: {
+        title,
+        content,
+        name,
       },
     })
       .then(res => dispatch(postCreate(res)))
