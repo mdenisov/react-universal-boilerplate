@@ -144,9 +144,7 @@ export function fetchSinglePost(slug) {
   return async (dispatch) => {
     dispatch(loadPost());
 
-    return api.fetchPost({
-      slug,
-    })
+    return api.fetchPost({ slug })
       .then(res => dispatch(loadPostSuccess(res)))
       .catch(res => dispatch(loadPostFailure(res)));
   };
@@ -172,9 +170,8 @@ export function deletePost(slug) {
   return (dispatch) => {
     dispatch(postRemove(slug));
 
-    return api.removePosts({
-      slug,
-    }).catch(err => console.log(err));
+    return api.removePosts({ slug })
+      .catch(err => console.log(err));
   };
 }
 
