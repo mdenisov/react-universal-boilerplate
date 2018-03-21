@@ -2,18 +2,18 @@ import { createAction, handleActions } from 'redux-actions';
 
 import api from './feed.api';
 
-const module = 'feed';
+const MODULE = 'feed';
 
-export const loadPosts = createAction(`${module}/posts/load`);
-export const loadPostsSuccess = createAction(`${module}/posts/load/success`, data => ({ data }));
-export const loadPostsFailure = createAction(`${module}/posts/load/failure`, error => ({ error }));
+export const loadPosts = createAction(`${MODULE}/posts/load`);
+export const loadPostsSuccess = createAction(`${MODULE}/posts/load/success`, data => ({ data }));
+export const loadPostsFailure = createAction(`${MODULE}/posts/load/failure`, error => ({ error }));
 
-export const loadPost = createAction(`${module}/post/load`);
-export const loadPostSuccess = createAction(`${module}/post/load/success`, data => ({ data }));
-export const loadPostFailure = createAction(`${module}/post/load/failure`, error => ({ error }));
+export const loadPost = createAction(`${MODULE}/post/load`);
+export const loadPostSuccess = createAction(`${MODULE}/post/load/success`, data => ({ data }));
+export const loadPostFailure = createAction(`${MODULE}/post/load/failure`, error => ({ error }));
 
-export const postRemove = createAction(`${module}/post/remove`, slug => ({ slug }));
-export const postCreate = createAction(`${module}/post/create`, data => ({ data }));
+export const postRemove = createAction(`${MODULE}/post/remove`, slug => ({ slug }));
+export const postCreate = createAction(`${MODULE}/post/create`, data => ({ data }));
 
 
 const defaultState = {
