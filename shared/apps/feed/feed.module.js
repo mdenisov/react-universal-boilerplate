@@ -4,13 +4,13 @@ import ApiClient from '../../../shared/utils/ApiClient';
 
 const module = 'feed';
 
-export const postsLoad = createAction(`${module}/posts/load`);
-export const postsLoadSuccess = createAction(`${module}/posts/load/success`, data => ({ data }));
-export const postsLoadFailure = createAction(`${module}/posts/load/failure`, error => ({ error }));
+export const loadPosts = createAction(`${module}/posts/load`);
+export const loadPostsSuccess = createAction(`${module}/posts/load/success`, data => ({ data }));
+export const loadPostsFailure = createAction(`${module}/posts/load/failure`, error => ({ error }));
 
-export const postLoad = createAction(`${module}/post/load`);
-export const postLoadSuccess = createAction(`${module}/post/load/success`, data => ({ data }));
-export const postLoadFailure = createAction(`${module}/post/load/failure`, error => ({ error }));
+export const loadPost = createAction(`${module}/post/load`);
+export const loadPostSuccess = createAction(`${module}/post/load/success`, data => ({ data }));
+export const loadPostFailure = createAction(`${module}/post/load/failure`, error => ({ error }));
 
 export const postRemove = createAction(`${module}/post/remove`, slug => ({ slug }));
 export const postCreate = createAction(`${module}/post/create`, data => ({ data }));
@@ -35,7 +35,7 @@ const defaultState = {
 
 const reducer = handleActions({
   // List
-  [postsLoad]: state => ({
+  [loadPosts]: state => ({
     ...state,
     posts: {
       loading: true,
@@ -44,7 +44,7 @@ const reducer = handleActions({
     },
   }),
 
-  [postsLoadSuccess]: (state, { payload: { data } }) => ({
+  [loadPostsSuccess]: (state, { payload: { data } }) => ({
     ...state,
     posts: {
       loading: false,
@@ -53,7 +53,7 @@ const reducer = handleActions({
     },
   }),
 
-  [postsLoadFailure]: (state, { payload: { error } }) => ({
+  [loadPostsFailure]: (state, { payload: { error } }) => ({
     ...state,
     posts: {
       loading: false,
@@ -63,7 +63,7 @@ const reducer = handleActions({
   }),
 
   // Single
-  [postLoad]: state => ({
+  [loadPost]: state => ({
     ...state,
     post: {
       loading: true,
@@ -72,7 +72,7 @@ const reducer = handleActions({
     },
   }),
 
-  [postLoadSuccess]: (state, { payload: { data } }) => ({
+  [loadPostSuccess]: (state, { payload: { data } }) => ({
     ...state,
     post: {
       loading: false,
@@ -81,7 +81,7 @@ const reducer = handleActions({
     },
   }),
 
-  [postLoadFailure]: (state, { payload: { error } }) => ({
+  [loadPostFailure]: (state, { payload: { error } }) => ({
     ...state,
     post: {
       loading: false,
@@ -114,22 +114,22 @@ const reducer = handleActions({
 /**
  * Fetch Posts
  */
-export function fetchAllPosts() {
+export function fetchPosts() {
   return async (dispatch) => {
-    dispatch(postsLoad());
+    dispatch(loadPosts());
 
     return ApiClient('/v1/posts/list', 'post')
-      .then(res => dispatch(postsLoadSuccess(res)))
-      .catch(res => dispatch(postsLoadFailure(res)));
+      .then(res => dispatch(loadPostsSuccess(res)))
+      .catch(res => dispatch(loadPostsFailure(res)));
   };
 }
 
-export function fetchAllPostsIfNeeded() {
+export function fetchPostsIfNeeded() {
   return (dispatch, getState) => {
     const { posts = {} } = getState().feed;
 
     if (posts.data.length === 0 && !posts.error) {
-      return dispatch(fetchAllPosts());
+      return dispatch(fetchPosts());
     }
 
     return null;
@@ -142,13 +142,13 @@ export function fetchAllPostsIfNeeded() {
 
 export function fetchSinglePost(slug) {
   return async (dispatch) => {
-    dispatch(postLoad());
+    dispatch(loadPost());
 
     return ApiClient('/v1/posts/get', 'post', {
       slug,
     })
-      .then(res => dispatch(postLoadSuccess(res)))
-      .catch(res => dispatch(postLoadFailure(res)));
+      .then(res => dispatch(loadPostSuccess(res)))
+      .catch(res => dispatch(loadPostFailure(res)));
   };
 }
 

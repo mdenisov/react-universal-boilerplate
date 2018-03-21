@@ -25,7 +25,7 @@ class Feed extends PureComponent {
   }
 
   componentDidMount() {
-    this.props.dispatch(actions.fetchAllPostsIfNeeded());
+    this.props.dispatch(actions.fetchPostsIfNeeded());
   }
 
   handleDeletePost(slug) {
