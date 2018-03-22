@@ -1,4 +1,3 @@
-// import pkg from '../../package.json';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 
@@ -41,9 +40,5 @@ class Config {
     return this.strategy.get(path);
   }
 }
-
-// const config = {
-//   env: process.env.NODE_ENV,
-// };
 
 export default Config;
