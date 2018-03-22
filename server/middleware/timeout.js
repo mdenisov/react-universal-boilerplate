@@ -1,7 +1,7 @@
 import Timeout from 'koa-better-timeout';
 
 function timeoutMiddleware(options = {}) {
-  const { ms = 3000 } = options;
+  const { ms = 6000 } = options;
 
   return async function timeout(ctx, next) {
     try {
