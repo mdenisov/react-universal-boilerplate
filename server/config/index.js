@@ -15,6 +15,12 @@ export class MemoryStrategy {
   get(path) {
     return _get(this.source, path, undefined);
   }
+
+  toJSON() {
+    return {
+      ...this.source,
+    };
+  }
 }
 
 class Config {
@@ -32,6 +38,10 @@ class Config {
 
   get(path) {
     return this.strategy.get(path);
+  }
+
+  toJSON() {
+    return this.strategy.toJSON();
   }
 }
 
