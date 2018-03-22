@@ -1,18 +1,14 @@
 import Config, { MemoryStrategy } from './index';
 
 describe('Config', () => {
-  test('Bad strategy', () => {
-    expect(() => new Config('bad')).toThrow('Strategy bad is not supported.');
-  });
-
   test('Memory strategy', () => {
-    const config = new Config('memory');
+    const config = new Config(Config.strategies.get('memory'));
 
     expect(config.strategy instanceof MemoryStrategy).toBe(true);
   });
 
   test('Set / Get', () => {
-    const config = new Config('memory');
+    const config = new Config(Config.strategies.get('memory'));
 
     config.set('env', 'test');
     config.set('foo.bar', 'foo');

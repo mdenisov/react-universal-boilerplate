@@ -22,13 +22,7 @@ class Config {
     ['memory', MemoryStrategy],
   ]);
 
-  constructor(strategy) {
-    if (!this.constructor.strategies.has(strategy)) {
-      throw new Error(`Strategy ${strategy} is not supported.`);
-    }
-
-    const Strategy = this.constructor.strategies.get(strategy);
-
+  constructor(Strategy) {
     this.strategy = new Strategy();
   }
 
