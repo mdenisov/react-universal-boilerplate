@@ -4,15 +4,15 @@ import { matchRoutes } from 'react-router-config';
 const prefetch = ({ routes, store, url }) => {
   const matches = matchRoutes(routes, url);
 
-  const promises = matches.map(({ route, match }) => {
+  const promises = matches.reduce((output, { route, match }) => {
     if (route.loadData) {
-      return Promise.all(route
+      output.push(Promise.all(route
         .loadData({ params: match.params, getState: store.getState })
-        .map(item => store.dispatch(item)));
+        .map(item => store.dispatch(item))));
     }
 
-    return Promise.resolve(null);
-  });
+    return output;
+  }, []);
 
   return Promise.all(promises);
 };
