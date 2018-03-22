@@ -62,7 +62,6 @@ const serverSideRenderer = ({ assets }) => async function renderer(ctx) {
       </StaticRouter>
     </Provider>
   );
-  // const html = render({ content, assets, store });
   const html = `${doctype}${ReactDOMServer.renderToString(render({ content, assets, store }))}`;
 
   // Check if the render result contains a redirect, if so we need to set
