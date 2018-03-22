@@ -106,9 +106,6 @@ class Feed extends PureComponent {
   }
 }
 
-// Actions required to provide data for this component to render in server side.
-// Feed.prefetch = [() => { return actions.fetchAllPosts(); }];
-
 const mapStateToProps = state => ({
   posts: getPostsState(state),
 });
